@@ -1,6 +1,6 @@
-import { FilterField, FilterOperator } from './types';
+import {  FilterFieldConfig, FilterOperator } from './types';
 
-export const FILTER_FIELDS: FilterField[] = [
+export const FILTER_FIELDS: FilterFieldConfig [] = [
     {
         id: 'name',
         label: 'Nom de la mission',
@@ -46,6 +46,7 @@ export const FILTER_OPERATORS: Record<string, { label: string; value: FilterOper
         { label: "N'est pas", value: 'not_equals' }
     ],
     boolean: [
-        { label: 'Est', value: 'equals' }
+        { label: 'Est', value: 'equals' },
+        { label: "N'est pas", value: 'not_equals' }
     ]
 };

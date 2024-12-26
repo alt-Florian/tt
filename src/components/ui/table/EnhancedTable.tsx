@@ -3,7 +3,8 @@ import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
 import { ColumnManager } from './ColumnManager/ColumnManager';
 import { FilterManager } from './Filter/FilterManager';
-import { FilterState } from './Filter/Types';
+import { FilterState } from './Filter/types';
+
 
 
 export interface Column {
@@ -13,19 +14,30 @@ export interface Column {
 }
 
 export interface TableProps {
-  data: any[];
+  data: any[] | undefined;
   columns: Column[];
   onSearch: (query: string) => void;
   onFilter: (filter: FilterState) => void;
+  onPaginationChange: (skip: number) => void;
+  skip: number;
+  count: number;
+  take: number;
+
 }
+
 
 export function EnhancedTable({ 
   data, 
   columns: initialColumns, 
   onSearch, 
-  onFilter 
+  onFilter,
+  skip,
+  count,
+  take,
+  onPaginationChange 
 }: TableProps) {
-  const [columns, setColumns] = useState(initialColumns);
+  console.log("🚀 ~ data:", data)
+  const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isColumnManagerOpen, setIsColumnManagerOpen] = useState(false);
 
@@ -39,6 +51,7 @@ export function EnhancedTable({
         />
         
         {/* Filter Manager */}
+        <div className="relative">
         <FilterManager
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
@@ -53,12 +66,17 @@ export function EnhancedTable({
           isOpen={isColumnManagerOpen}
           columns={columns}
           onColumnChange={setColumns}
-        />
+          />
+          </div>
       </div>
       
       <TableBody 
-        data={data} 
+        data={data as any[]} 
         columns={columns.filter(col => col.visible)} 
+        skip={skip}
+        count={count}
+        take={take}
+        onPaginationChange={onPaginationChange}
       />
     </div>
   );

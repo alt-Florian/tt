@@ -1,6 +1,6 @@
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { FilterCondition } from './FilterCondition';
-import { FilterCondition as FilterConditionType, FilterLogic } from './Types';
+import { FilterCondition as FilterConditionType, FilterLogic } from './types';
 
 interface FilterBuilderProps {
   conditions: FilterConditionType[];
@@ -36,7 +36,7 @@ export function FilterBuilder({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4">
+      {/* <div className="flex items-center gap-2 mb-4">
         <span className="text-sm font-medium text-gray-700">Logique:</span>
         <select
           value={logic}
@@ -46,7 +46,7 @@ export function FilterBuilder({
           <option value="and">ET</option>
           <option value="or">OU</option>
         </select>
-      </div>
+      </div> */}
 
       {conditions.map((condition, index) => (
         <FilterCondition
@@ -61,10 +61,10 @@ export function FilterBuilder({
       <div className="flex justify-between">
         <button
           onClick={addCondition}
-          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+          className="inline-flex items-center mb-3 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
         >
           <PlusIcon className="w-4 h-4 mr-1" />
-          Ajouter une condition
+                  {conditions.length>0?`Ajouter une condition`:`Créer un filtre`}
         </button>
 
         <button

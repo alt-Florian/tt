@@ -6,7 +6,11 @@ interface TableHeaderProps {
   onColumnManagerClick: () => void;
 }
 
-export const TableHeader: React.FC<TableHeaderProps> = ({ onSearch, onFilterClick, onColumnManagerClick }) => {
+export const TableHeader: React.FC<TableHeaderProps> = ({ 
+  onSearch, 
+  onFilterClick, 
+  onColumnManagerClick 
+}) => {
   return (
     <div className="flex justify-between items-center gap-4">
       <div className="flex-1 relative">
@@ -20,13 +24,15 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ onSearch, onFilterClic
       </div>
       
       <div className="flex gap-2">
-        <button
-          onClick={onFilterClick}
-          className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-50"
-        >
-          <FunnelIcon className="h-5 w-5" />
-          Filtrer les données
-        </button>
+        <div className="relative">
+          <button
+            onClick={onFilterClick}
+            className="flex items-center gap-2 px-3 py-2 border rounded-md hover:bg-gray-50"
+          >
+            <FunnelIcon className="h-5 w-5" />
+            Filtrer les données
+          </button>
+        </div>
         
         <button
           onClick={onColumnManagerClick}
@@ -38,4 +44,4 @@ export const TableHeader: React.FC<TableHeaderProps> = ({ onSearch, onFilterClic
       </div>
     </div>
   );
-};
+}

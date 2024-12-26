@@ -1,6 +1,7 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { EnhancedTable } from "@components/ui/table/EnhancedTable";
 import { useMissionsViewModel } from "./Missions.viewmodel";
+import { useNavigate } from "react-router-dom";
 
 export default function MissionsPage() {
   const { 
@@ -8,10 +9,16 @@ export default function MissionsPage() {
     columns, 
     handleSearch, 
     handleFilter,
+    skip,
     isLoading,
     error 
   } = useMissionsViewModel();
 
+
+    const navigate = useNavigate()
+    const onPaginationChange = (newSkip: number) => navigate(`/missions?skip=${newSkip}`);
+  
+  
   if (isLoading) return <div>Chargement...</div>;
   if (error) return <div>Une erreur est survenue</div>;
 
@@ -29,10 +36,14 @@ export default function MissionsPage() {
       </div>
 
       <EnhancedTable
-        data={data}
+        data={data.datas}
         columns={columns}
         onSearch={handleSearch}
         onFilter={handleFilter}
+        skip={skip}
+        count={data.paginate.count}
+        take={data.paginate.take}
+        onPaginationChange={onPaginationChange}
       />
     </div>
   );

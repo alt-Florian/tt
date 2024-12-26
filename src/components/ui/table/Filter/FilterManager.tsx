@@ -1,8 +1,8 @@
 import { useFilterStore } from "@stores/FilterStore";
-import { FilterState } from "./Types";
+import { FilterState } from "./types";
 import { FilterBuilder } from "./FilterBuilder";
 import { FilterSaver } from "./FilterSaver";
-import { SavedFilter } from "./SavedFilter";
+import { SavedFilters } from "./SavedFilters";
 
 
 interface FilterManagerProps {
@@ -25,27 +25,12 @@ export function FilterManager({ isOpen, onApply, onClose }: FilterManagerProps) 
   if (!isOpen) return null;
 
   return (
-    <div className="absolute left-0 mt-2 w-[600px] bg-white rounded-md shadow-lg border border-gray-200 z-50">
+  <div className="absolute left-0 mt-2 w-[600px] bg-white rounded-md shadow-lg border border-gray-200 z-50">
       <div className="p-4">
         <h3 className="text-xl font-semibold mb-6">Filtrer les données</h3>
         
         {/* Saved Filters */}
-        <div className="mb-6">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">VOS FILTRES ENREGISTRÉS</h4>
-          <div className="flex flex-wrap gap-2">
-            {savedFilters.map((filter) => (
-              <SavedFilter 
-                key={filter.id}
-                filter={filter}
-                onDelete={removeSavedFilter}
-                onSelect={() => {
-                  setConditions(filter.conditions);
-                  setLogic(filter.logic);
-                }}
-              />
-            ))}
-          </div>
-        </div>
+   <SavedFilters />
 
         {/* Filter Builder */}
         <FilterBuilder 
@@ -68,7 +53,7 @@ export function FilterManager({ isOpen, onApply, onClose }: FilterManagerProps) 
         />
 
         {/* Actions */}
-        <div className="flex justify-between mt-4">
+<div className="flex justify-between mt-6">
           <button
             onClick={reset}
             className="text-sm text-gray-600 hover:text-gray-900"

@@ -8,4 +8,10 @@ export const useUsersListStore = create<UsersListState>((set) => ({
     set({
       skip: 0,
     }),
+  users: [],
+  isLoading: false,
+  error: null,
+  setUsers: (users) => set({ users }),
+  setError: (error) => set({ error }),
+  setLoading: (isLoading) => set({ isLoading })
 }));

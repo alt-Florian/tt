@@ -1,12 +1,13 @@
 import { create } from 'zustand';
-import { FilterState, SavedFilter, FilterCondition, FilterLogic } from '@ui/table/Filter/Types';
+import { FilterState, SavedFilterType, FilterCondition, FilterLogic }  from '@components/ui/table/Filter/types'
+import { initialSavedFilters } from './data/savedFilters';
 
 interface FilterStore {
     currentFilter: FilterState;
-    savedFilters: SavedFilter[];
+    savedFilters: SavedFilterType[];
     setConditions: (conditions: FilterCondition[]) => void;
     setLogic: (logic: FilterLogic) => void;
-    addSavedFilter: (filter: SavedFilter) => void;
+    addSavedFilter: (filter: SavedFilterType) => void;
     removeSavedFilter: (id: string) => void;
     reset: () => void;
 }
@@ -18,7 +19,7 @@ const initialState: FilterState = {
 
 export const useFilterStore = create<FilterStore>((set) => ({
     currentFilter: initialState,
-    savedFilters: [],
+    savedFilters: initialSavedFilters,
     setConditions: (conditions) =>
         set((state) => ({
             currentFilter: { ...state.currentFilter, conditions }

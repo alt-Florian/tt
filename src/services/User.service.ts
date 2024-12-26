@@ -4,12 +4,14 @@ import {
   UserResponse,
   UsersListResponse,
 } from "@interfaces/user/User.interface";
+import { useUsersListStore } from "@stores/UsersList.store";
 import {
   useMutation,
   UseMutationResult,
   useQuery,
   UseQueryResult,
 } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 class UserService {
   public getAllUsers(
@@ -44,6 +46,38 @@ class UserService {
       mutationFn: ({ id, newUser }) => userApi.updateUser(id, newUser),
     });
   }
+
+  getCached() {
+    const { setUsers, setError, setLoading } = useUsersListStore();
+    const STALE_TIME = 5 * 60 * 1000; // 5 minutes
+
+    const { data, isLoading, error } = useQuery<UsersListResponse, any>({
+      queryKey: ['usersCached'],
+      queryFn: () => userApi.fetchAllUsers(0, []),
+      staleTime: STALE_TIME,
+      refetchInterval: STALE_TIME
+    });
+
+
+    useEffect(() => {
+      if (data?.datas) {
+        setUsers(data.datas);
+      }
+      if (error) {
+        setError(error);
+      }
+      setLoading(isLoading);
+    }, [data, error, isLoading, setUsers, setError, setLoading]);
+
+    return {
+      users: data?.datas || [],
+      isLoading,
+      error
+    };
+
+
+  }
+
 }
 
 export const userService = new UserService();

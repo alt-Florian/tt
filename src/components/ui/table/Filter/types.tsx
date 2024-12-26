@@ -2,12 +2,7 @@ export type FilterOperator = 'equals' | 'not_equals' | 'contains' | 'not_contain
 
 export type FilterLogic = 'and' | 'or';
 
-export interface FilterField {
-  id: string;
-  label: string;
-  type: 'text' | 'select' | 'boolean' | 'date';
-  options?: { value: string; label: string }[];
-}
+export type FilterFieldType = 'text' | 'select' | 'boolean' | 'number'
 
 export interface FilterCondition {
   id: string;
@@ -26,4 +21,11 @@ export interface SavedFilterType {
 export interface FilterState {
   conditions: FilterCondition[];
   logic: FilterLogic;
+}
+
+export interface FilterFieldConfig {
+  id: string;
+  label: string;
+  type: FilterFieldType;
+  options?: { label: string; value: string }[];
 }

@@ -1,11 +1,17 @@
+import { tableHelper } from '@utils/table';
 import { Column } from './EnhancedTable';
-
+import Pagination from "@components/ui/Pagination";
 interface TableBodyProps {
-  data: any[];
+  data: any[] ;
   columns: Column[];
+  onPaginationChange: (skip: number) => void;
+  skip: number;
+  count: number;
+  take: number;
 }
 
-export const TableBody: React.FC<TableBodyProps> = ({ data, columns }) => {
+export const TableBody: React.FC<TableBodyProps> = ({ data, columns, onPaginationChange, skip, count, take }) => {
+  
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-300">
@@ -29,11 +35,22 @@ export const TableBody: React.FC<TableBodyProps> = ({ data, columns }) => {
                   key={column.id}
                   className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
                 >
-                  {row[column.id]}
+                  {
+                    tableHelper.format(column.id,row[column.id])}
                 </td>
-              ))}
+              )) }
             </tr>
           ))}
+           <tr>
+                <td >
+                  <Pagination
+                    count={count}
+                    skip={skip}
+                    take={take}
+                    onPaginationChange={onPaginationChange}
+                  />
+                </td>
+              </tr>
         </tbody>
       </table>
     </div>
