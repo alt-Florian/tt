@@ -23,6 +23,7 @@ import PhysicalCustomerEnterprises from "@pages/Customer/Physical/PhysicalCustom
 import PhysicalCustomerFilePage from "@pages/Customer/Physical/PhysicalCustomerFile.page";
 import PhysicalCustomerProfile from "@pages/Customer/Physical/PhysicalCustomerProfile";
 import HomePage from "@pages/Home/Home.page";
+import MissionsPage from "@pages/Missions/Missions.page";
 import SignInPage from "@pages/SignIn/SignIn.page";
 import UsersListPage from "@pages/User/UsersList.page";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -41,6 +42,7 @@ function App() {
   const routesWithLayout: IRoute[] = [
     { path: "/", element: <HomePage /> },
     { path: "/users", element: <UsersListPage /> },
+     { path: "/missions", element: <MissionsPage /> },
     {
       path: "/configs",
       element: <ConfigPage />,
