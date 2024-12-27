@@ -1,6 +1,7 @@
+import { CardResumeTask, CardTimer } from "@components/ui/CardTimer";
 import Layout from "@components/ui/Layout/Layout";
 import Overlays from "@components/ui/Layout/Overlay";
-import { useServiceWorker } from "@hooks/useServiceWorker";
+import { BuildingOfficeIcon, PlayIcon } from "@heroicons/react/20/solid";
 import BankDetailForm from "@pages/Config/BankDetails/BankDetailForm.page";
 import BankDetailList from "@pages/Config/BankDetails/BankDetailsList";
 import BlockForm from "@pages/Config/Block/BlockForm.page";
@@ -24,10 +25,12 @@ import PhysicalCustomerEnterprises from "@pages/Customer/Physical/PhysicalCustom
 import PhysicalCustomerFilePage from "@pages/Customer/Physical/PhysicalCustomerFile.page";
 import PhysicalCustomerProfile from "@pages/Customer/Physical/PhysicalCustomerProfile";
 import HomePage from "@pages/Home/Home.page";
-import MissionsPage from "@pages/Missions/Missions.page";
+import MissionPage from "@pages/Mission/Mission.page";
 import SignInPage from "@pages/SignIn/SignIn.page";
 import UsersListPage from "@pages/User/UsersList.page";
+import { useMissionStore } from "@stores/Mission.store";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import MissionsPage from "@pages/Missions/Missions.page";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 interface IRoute {
@@ -38,15 +41,25 @@ interface IRoute {
 
 function App() {
 
-    useServiceWorker();
+  const {
+    showResumeCard,
+    currentTask,
+    resumeLastTask,
+    closeResumeCard,
+    togglePauseTimer,
+    stopTaskTimer,
+  } = useMissionStore();
+
 
   const routesWithoutLayout: IRoute[] = [
+
     { path: "/signin", element: <SignInPage /> },
   ];
   const routesWithLayout: IRoute[] = [
     { path: "/", element: <HomePage /> },
     { path: "/users", element: <UsersListPage /> },
-     { path: "/missions", element: <MissionsPage /> },
+         { path: "/missions", element: <MissionsPage /> },
+    { path: "/mission", element: <MissionPage /> },
     {
       path: "/configs",
       element: <ConfigPage />,
@@ -91,6 +104,7 @@ function App() {
         { path: "missions", element: <Missions /> },
       ],
     },
+
   ];
 
   return (
@@ -114,6 +128,29 @@ function App() {
           ))}
         </Route>
       </Routes>
+
+
+      {showResumeCard && !currentTask && (
+        <div className="fixed bottom-4 right-4">
+          <CardResumeTask onResume={resumeLastTask} onClose={closeResumeCard} />
+        </div>
+      )}
+
+
+      {currentTask && (
+        <div className="fixed bottom-4 right-4">
+          <CardTimer
+            title={currentTask.title}
+            description={currentTask.description}
+            companyName={currentTask.companyName}
+            time={currentTask.time} // ex: "00:13:33"
+            icon={<BuildingOfficeIcon className="h-4 w-4 text-white" />}
+            isPaused={currentTask.isPaused} 
+            onTogglePause={() => { togglePauseTimer(); }}
+            onStop={() => { stopTaskTimer(); }}
+          />
+        </div>
+      )}
 
       <Overlays />
       <ReactQueryDevtools />

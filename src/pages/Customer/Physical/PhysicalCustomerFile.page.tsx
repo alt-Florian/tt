@@ -63,7 +63,7 @@ export default function PhysicalCustomerFilePage() {
                     style={{ backgroundColor: refType.type.colorCode }}
                   ></span>
                   <span>{refType.type.name}</span>
-                  <span>{refType.customerId.name}</span>
+                  <span>{refType.customerId.name}</span>fe
                 </div>
               ) : null}
             </div>

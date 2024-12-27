@@ -4,13 +4,13 @@ import {
   UserResponse,
   UsersListResponse,
 } from "@interfaces/user/User.interface";
-import { useUsersListStore } from "@stores/UsersList.store";
 import {
   useMutation,
   UseMutationResult,
   useQuery,
   UseQueryResult,
 } from "@tanstack/react-query";
+import { useUsersListStore } from "@stores/UsersList.store";
 import { useEffect } from "react";
 
 class UserService {

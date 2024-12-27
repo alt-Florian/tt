@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MISSION_COLUMNS } from "./constants/missionColumns";
-import { missionService } from "@services/mission/mission.service";
+import { missionService } from "@services/Mission.service";
 import { useSearchParams } from "react-router-dom";
 export function useMissionsViewModel() {
 

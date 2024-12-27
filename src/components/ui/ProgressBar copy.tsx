@@ -4,7 +4,7 @@ interface ProgressBarProps {
     progress: number;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
 
     const clampedProgress = Math.min(Math.max(progress, 0), 100);
 

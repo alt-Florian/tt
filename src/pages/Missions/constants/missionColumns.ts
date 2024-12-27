@@ -7,7 +7,12 @@ export const MISSION_COLUMNS = [
   {
     id: 'refLawyer',
     label: 'Responsable',
-    visible: false
+    visible: true
+  },
+  {
+    id: 'm_progress',
+    label: 'progression',
+    visible: true
   },
   {
     id: 'template',
@@ -15,8 +20,8 @@ export const MISSION_COLUMNS = [
     visible: true
   },
   {
-    id: 'status',
-    label: 'Status',
+    id: 'collabList',
+    label: 'list des collabs',
     visible: true
   },
   {
@@ -24,9 +29,5 @@ export const MISSION_COLUMNS = [
     label: 'Urgent',
     visible: true
   },
-  {
-    id: 'collabList',
-    label: 'list des collabs',
-    visible: true
-  }
+
 ];

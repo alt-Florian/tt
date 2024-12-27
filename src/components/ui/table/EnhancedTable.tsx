@@ -4,6 +4,7 @@ import { TableBody } from './TableBody';
 import { ColumnManager } from './ColumnManager/ColumnManager';
 import { FilterManager } from './Filter/FilterManager';
 import { FilterState } from './Filter/types';
+import { tableHelper } from '@utils/table';
 
 
 
@@ -19,9 +20,11 @@ export interface TableProps {
   onSearch: (query: string) => void;
   onFilter: (filter: FilterState) => void;
   onPaginationChange: (skip: number) => void;
+  transformer: typeof tableHelper;
   skip: number;
   count: number;
   take: number;
+  path: string;
 
 }
 
@@ -34,9 +37,11 @@ export function EnhancedTable({
   skip,
   count,
   take,
-  onPaginationChange 
+  onPaginationChange,
+  transformer,
+  path
 }: TableProps) {
-  console.log("🚀 ~ data:", data)
+  
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isColumnManagerOpen, setIsColumnManagerOpen] = useState(false);
@@ -77,6 +82,8 @@ export function EnhancedTable({
         count={count}
         take={take}
         onPaginationChange={onPaginationChange}
+        transformer={transformer}
+        path={path}
       />
     </div>
   );

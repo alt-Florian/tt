@@ -15,10 +15,16 @@ class TableHelper extends TransformTable {
         switch (id) {
             case 'refLawyer': return this.refLawyer(value as number);
             case 'collabList': return this.collabList(value as number[]);
+            case 'm_progress': return this.m_progress(value as number);
         }
 
         return value;
 
+    }
+
+
+    setUsers(datas: any[]): void {
+        this.users = datas;
     }
 
 
