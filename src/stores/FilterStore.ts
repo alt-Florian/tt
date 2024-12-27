@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { FilterState, SavedFilterType, FilterCondition, FilterLogic }  from '@components/ui/table/Filter/types'
+import { FilterState, SavedFilterType, FilterCondition, FilterLogic } from '@components/ui/table/Filter/types'
 import { initialSavedFilters } from './data/savedFilters';
 
 interface FilterStore {
@@ -36,5 +36,9 @@ export const useFilterStore = create<FilterStore>((set) => ({
         set((state) => ({
             savedFilters: state.savedFilters.filter(f => f.id !== id)
         })),
-    reset: () => set({ currentFilter: initialState })
+    reset: () => set({ currentFilter: initialState }),
+    setInitFilters: (filters: SavedFilterType[]) =>
+        set(() => ({
+            savedFilters: [...filters]
+        })),
 }));

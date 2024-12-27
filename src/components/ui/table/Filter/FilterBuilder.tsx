@@ -1,6 +1,6 @@
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { FilterCondition } from './FilterCondition';
-import { FilterCondition as FilterConditionType, FilterFieldConfig, FilterLogic } from './types';
+import { enumOperator, FilterCondition as FilterConditionType, FilterFieldConfig, FilterLogic } from './types';
 import { Button } from '@components/ui/Button/Button';
 
 interface FilterBuilderProps {
@@ -32,7 +32,7 @@ export function FilterBuilder({
     onConditionsChange([...conditions, {
       id: Date.now().toString(),
       field: 'name',
-      operator: 'equals',
+      operator:  enumOperator.EQ,
       value: ''
     }]);
   };
@@ -65,7 +65,7 @@ export function FilterBuilder({
         <Button
           variant="secondary"
           onClick={addCondition}
-           disabled={!hasAvailableFields}
+          disabled={!hasAvailableFields}
           className="flex items-center gap-2"
         >
           <PlusIcon className="h-4 w-4" />

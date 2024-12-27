@@ -1,5 +1,5 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { FilterCondition as FilterConditionType, FilterFieldConfig } from './types';
+import { enumOperator, FilterCondition as FilterConditionType, FilterFieldConfig } from './types';
 import { FILTER_OPERATORS } from './config';
 import { DynamicSelect } from './components/DynamicSelect';
 import { DateInput } from './components/DateInput';
@@ -71,8 +71,8 @@ export const FilterCondition = memo(function FilterCondition({
         <DateInput
           value={condition.value as Date}
           onChange={(date) => onChange({ ...condition, value: date })}
-          isBetween={condition.operator === 'between'}
-          onEndDateChange={condition.operator === 'between' ? 
+          isBetween={condition.operator ===  enumOperator.BETWEEN}
+          onEndDateChange={condition.operator ===  enumOperator.BETWEEN ? 
             (date) => onChange({ ...condition, endDate: date }) : 
             undefined}
           endDate={condition.endDate as Date}
@@ -90,8 +90,8 @@ export const FilterCondition = memo(function FilterCondition({
         <NumberInput
           value={condition.value as number}
           onChange={(value) => onChange({ ...condition, value })}
-          isBetween={condition.operator === 'between'}
-          onEndValueChange={condition.operator === 'between' ? 
+          isBetween={condition.operator ===  enumOperator.BETWEEN}
+          onEndValueChange={condition.operator ===  enumOperator.BETWEEN ? 
             (value) => onChange({ ...condition, endValue: value }) : 
             undefined}
           endValue={condition.endValue as number}
@@ -134,8 +134,8 @@ return (
         value={condition.operator}
         onChange={(e) => onChange({ 
           ...condition, 
-          operator: e.target.value as FilterConditionType['operator'],
-          endValue: e.target.value === 'between' ? condition.endValue : undefined 
+          operator: e.target.value as unknown as FilterConditionType['operator'],
+          endValue: e.target.value ===  enumOperator.BETWEEN.toString() ? condition.endValue : undefined 
         })}
         className="rounded-md border-gray-300 text-sm min-w-[120px]"
       >

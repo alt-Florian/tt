@@ -2,8 +2,13 @@ import { useFilterStore } from "@stores/FilterStore";
 import { SavedFilter } from "./SavedFilter";
 import { Card, CardBody } from "@components/ui/Card";
 
+
 export function SavedFilters() {
   const { savedFilters } = useFilterStore();
+  console.log("🚀 ~ SavedFilters ~ savedFilters:", savedFilters)
+
+
+
 
   if (savedFilters.length === 0) return null;
 

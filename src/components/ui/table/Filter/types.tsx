@@ -1,16 +1,34 @@
-export type FilterOperator = 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with' | 'before' | 'after' | 'between' | 'greater_than' | 'less_than_equal' | 'greater_than_equal' | 'less_than';
+
+
 
 export type FilterLogic = 'and' | 'or';
 
 export type FilterFieldType = 'text' | 'select' | 'boolean' | 'number' | 'date';
 
+export enum enumOperator {
+    CONTAIN, // verifier champ > tableau ou string > $regex
+    DOES_NOT_CONTAIN,//String
+    CAN_CONTAIN,
+    CANNOT_CONTAIN,
+    HAS_ANY,
+    HAS_ALL_OF,
+    HAS_NONE_OF,
+    EQ,
+    NE,
+    GT,
+    GTE,
+    LT,
+  LTE,
+    BETWEEN
+}
+
 export interface FilterCondition {
   id: string;
   field: string;
-  operator: FilterOperator;
+  operator: enumOperator;
   value: string | number | Array<string | number> | boolean | Date | null;
-  endDate?: Date | null; // For 'between' date operator
-  endValue?: string | number | Date | null; // Added for range operations
+  endDate?: Date | null; 
+  endValue?: string | number | Date | null;
 }
 
 export interface SavedFilterType {

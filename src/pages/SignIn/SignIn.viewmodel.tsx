@@ -2,6 +2,7 @@ import { SignInCredentials } from "@interfaces/auth/SignInCredentials";
 import { SignInSchema } from "@schemas/auth/Signin.schema";
 import { authService } from "@services/Auth.service";
 import { useAuthStore } from "@stores/Auth.store";
+import { useFilterStore } from "@stores/FilterStore";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +10,7 @@ export function SignInViewModel() {
   const navigate = useNavigate();
   const { mutate, isError, error, isPending } = authService.signIn();
   const { setAuthState } = useAuthStore();
+  const  { setInitFilters }  = useFilterStore();
 
   const signIn = (credentials: SignInCredentials) => {
     mutate(credentials, {
@@ -25,6 +27,7 @@ export function SignInViewModel() {
           },
           filters: datas.filters,
         });
+        setInitFilters(datas.filters)
         // Temporary add tokens in localStorage to ease dev nagivation
         localStorage.setItem("token", datas.token);
         localStorage.setItem("refreshToken", datas.refreshToken);
