@@ -24,6 +24,7 @@ interface SelectProps {
     >
   ) => void;
   classNameLabel?: string;
+  className?: string;
 }
 export default function Select({
   isOptional,
@@ -32,6 +33,7 @@ export default function Select({
   value,
   onChange,
   classNameLabel,
+  className=''
 }: SelectProps) {
   //Function to fix types issue with onChange on Select elements
   const handleChange = (newValue: string | number) => {
@@ -43,17 +45,17 @@ export default function Select({
     onChange(fakeEvent);
   };
   // Find the name corresponding to the selected value
-  const selectedItem = list.find((item) => item.id === value);
+  const selectedItem = list.find((item) => item.id === value);369
   const selectedName = selectedItem ? selectedItem.name : value;
 
   return (
-    <Listbox value={value} onChange={handleChange}>
+    <Listbox value={value} onChange={handleChange} >
       <Label
         className={`block text-sm/6 font-medium text-black mb-2 ${classNameLabel}`}
       >
         {label}
       </Label>
-      <div className="relative">
+      <div className={`relative ${className}`}>
         <ListboxButton className="grid w-full min-h-[40px] cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
           <span className="col-start-1 row-start-1 pr-6">{selectedName}</span>
           <ChevronDownIcon

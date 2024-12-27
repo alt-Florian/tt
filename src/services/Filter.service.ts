@@ -1,35 +1,18 @@
-// src/components/ui/table/Filter/hooks/useFilterOptions.ts
-import { useQuery, } from '@tanstack/react-query';
-import { DynamicSelectConfig } from '@ui/table/Filter/types';
-import { userService } from '@services/User.service';
-import { letterTemplateService } from '@services/config/LetterTemplate.service';
+import { userApi } from "@api/User.api";
+import { letterTemplateApi } from "@api/config/LetterTemplate.api";
+import { customerApi } from "@api/customer/Customer.api";
 
-const apiEndpoints: Record<string, any> = {
-    users: () => userService.getAllUsers(0, ['id', 'firstname', 'lastname']),
-    letterTemplates: () => letterTemplateService.getAllLetterTemplates()
-};
 
-export function useFilterOptions(config: DynamicSelectConfig) {
-    const { endpoint, transformResponse } = config;
+class FilterService {
 
-    const query = useQuery({
-        queryKey: [`filterOptions-${endpoint}`],
-        queryFn: () => {
-            const fetchFn = apiEndpoints[endpoint];
-            if (!fetchFn) {
-                throw new Error(`No API endpoint configured for ${endpoint}`);
-            }
-            return fetchFn();
-        },
-        select: (data) => {
-            if (!data?.datas) return [];
-            return transformResponse ? transformResponse(data.datas) : [];
+    async getFilterOptions(endpoint: string, extra: string='') {
+        switch(endpoint) {
+            case 'users': return userApi.fetchAllUsers(0, ['id', 'firstname', 'lastname']);
+            case 'letterTemplates': return letterTemplateApi.getAllLetterTemplates();
+            case 'customerSearch': return customerApi.search(extra)
+            default: throw new Error(`No API endpoint configured for ${endpoint}`);
         }
-    });
-
-    return {
-        options: query.data || [],
-        isLoading: query.isLoading,
-        error: query.error
-    };
+    }
 }
+
+export const filterService = new FilterService();

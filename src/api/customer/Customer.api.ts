@@ -219,6 +219,15 @@ class CustomerApi {
       throw error;
     }
   }
+
+  async search(term: string) {
+     try {
+      const { data } = await api.get(`/crm/customer/search/${term}?customer=true&limit=0`);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export const customerApi = new CustomerApi();

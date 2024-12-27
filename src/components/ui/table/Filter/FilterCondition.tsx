@@ -3,7 +3,13 @@ import { FilterCondition as FilterConditionType } from './types';
 import { FILTER_FIELDS } from './config';
 import { FILTER_OPERATORS } from './config';
 import { DynamicSelect } from './components/DynamicSelect';
+import { DateInput } from './components/DateInput';
 import { memo } from 'react';
+import MultiSelectV2 from '@components/ui/MultiSelectV2';
+import Select from '@components/ui/Select';
+import { BooleanInput } from './components/BooleanInput';
+import { AsyncSearchInput }  from './components/AsyncSearchInput';
+
 interface FilterConditionProps {
   condition: FilterConditionType;
   isFirst: boolean;
@@ -31,31 +37,70 @@ export const FilterCondition = memo(function FilterCondition({
             config={field.options}
             value={condition.value as string}
             onChange={(value) => onChange({ ...condition, value })}
+            multiSelect={field.multiSelect}
           />
         );
       } else if (Array.isArray(field.options)) {
-        return (
-          <select
-            value={condition.value as string}
-            onChange={(e) => onChange({ ...condition, value: e.target.value })}
-            className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
-          >
-            {field.options.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        );
+       return field.multiSelect ? (
+        <MultiSelectV2
+          list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
+          values={Array.isArray(condition.value) ? condition.value : []}
+          onChange={(value) => onChange({ ...condition, value })}
+          className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
+          label=''
+        />
+      ) : (
+        <Select
+          list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
+          value={condition.value as string}
+          onChange={(e) => onChange({ ...condition, value: e.target.value })}
+          className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
+        />
+      );
       }
     }
+
+    if (field.type === 'date') {
+      return (
+        <DateInput
+          value={condition.value as Date}
+          onChange={(date) => onChange({ ...condition, value: date })}
+          isBetween={condition.operator === 'between'}
+          onEndDateChange={condition.operator === 'between' ? 
+            (date) => onChange({ ...condition, endDate: date }) : 
+            undefined}
+          endDate={condition.endDate as Date}
+        />
+      );
+}
+
+if (field.type === 'boolean') {
+  return (
+    <BooleanInput
+      value={condition.value as boolean}
+      onChange={(value) => onChange({ ...condition, value })}
+    />
+  );
+}
+if (field.type === 'async-search' && 'endpoint' in field?.options) {
+  return (
+    <AsyncSearchInput
+     
+      endpoint={field.options.endpoint}
+      minChars={field.options.minChars}
+      value={condition.value as string}
+      onChange={(value) => onChange({ ...condition, value })}
+      placeholder={field.options.placeholder}
+    />
+  );
+}
 
     return (
       <input
         type="text"
         value={condition.value as string}
         onChange={(e) => onChange({ ...condition, value: e.target.value })}
-        className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
+        className="rounded-md border-gray-300 text-sm min-w-[150px]"
         placeholder="Valeur"
       />
     );

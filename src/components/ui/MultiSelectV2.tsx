@@ -21,6 +21,8 @@ interface MultiSelectProps {
   label: string;
   values: Array<string | number>;
   onChange: (newValues: Array<string | number>) => void;
+    className?: string;
+
 }
 
 export default function MultiSelectV2({
@@ -28,6 +30,7 @@ export default function MultiSelectV2({
   label,
   values,
   onChange,
+  className=""
 }: MultiSelectProps) {
   const handleChange = (newValues: Array<string | number>) => {
     onChange(newValues);
@@ -39,7 +42,7 @@ export default function MultiSelectV2({
   return (
     <Listbox value={values} onChange={handleChange} multiple>
       <Label className="block text-sm/6 font-medium text-black">{label}</Label>
-      <div className="relative mt-2">
+      <div className={`relative mt-2 ${className}`}>
         <ListboxButton className="grid w-full min-h-[36px] cursor-default grid-cols-1 rounded-md bg-white py-1.5 pl-3 pr-2 text-left text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
           <span className="col-start-1 row-start-1 pr-6 flex flex-wrap gap-1">
             {values.length > 0

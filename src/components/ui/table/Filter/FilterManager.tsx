@@ -25,9 +25,10 @@ export function FilterManager({ isOpen, onApply, onClose }: FilterManagerProps) 
   if (!isOpen) return null;
 
   return (
-  <div className="absolute left-0 mt-2 w-[600px] bg-white rounded-md shadow-lg border border-gray-200 z-50">
+    <div className="absolute left-0 mt-2 w-[800px] max-h-[80vh] overflow-y-auto bg-white rounded-md shadow-lg border border-gray-200 z-50">
       <div className="p-4">
         <h3 className="text-xl font-semibold mb-6">Filtrer les données</h3>
+        
         
         {/* Saved Filters */}
    <SavedFilters />
@@ -53,7 +54,7 @@ export function FilterManager({ isOpen, onApply, onClose }: FilterManagerProps) 
         />
 
         {/* Actions */}
-<div className="flex justify-between mt-6">
+ <div className="flex justify-between mt-6">
           <button
             onClick={reset}
             className="text-sm text-gray-600 hover:text-gray-900"
