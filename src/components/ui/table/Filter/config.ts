@@ -1,104 +1,5 @@
-import { FilterFieldConfig, FilterOperator } from './types';
+import { FilterOperator } from './types';
 
-export const FILTER_FIELDS: FilterFieldConfig[] = [
-    {
-        id: 'name',
-        label: 'Nom de la mission',
-        type: 'text'
-    },
-    {
-        id: 'refLawyer',
-        label: 'Responsable',
-        type: 'select',
-        multiSelect: false,
-        options: {
-            endpoint: 'users',
-            valueKey: 'id',
-            labelKey: 'name',
-            transformResponse: (data) => {
-                return data.map((user: any) => ({
-                    value: user.id,
-                    label: `${user.firstname} ${user.lastname}`
-                }));
-            }
-        }
-    },
-    {
-        id: 'collabList',
-        label: 'Collaborateur(s)',
-        type: 'select',
-        multiSelect: true,
-        options: {
-            endpoint: 'users',
-            valueKey: 'id',
-            labelKey: 'name',
-            transformResponse: (data) => {
-                return data.map((user: any) => ({
-                    value: user.id,
-                    label: `${user.firstname} ${user.lastname}`
-                }));
-            }
-        }
-    },
-    {
-        id: 'template',
-        label: 'Template',
-        type: 'select',
-        multiSelect: false,
-        options: {
-            endpoint: 'letterTemplates',
-            valueKey: '_id',
-            labelKey: 'name',
-            transformResponse: (data) => {
-                return data.map((template: any) => ({
-                    value: template._id,
-                    label: template.name
-                }));
-            }
-        }
-    },
-    {
-        id: 'status',
-        label: 'Statut',
-        type: 'select',
-        options: [
-            { value: 'accepted', label: 'Accepté' },
-            { value: 'pending', label: 'En attente' },
-            { value: 'rejected', label: 'Refusé' }
-        ]
-    },
-    {
-        id: 'urgent',
-        label: 'Urgent',
-        type: 'boolean'
-    },
-    {
-        id: 'startingDate',
-        label: 'Date de création',
-        type: 'date'
-    },
-    {
-        id: 'dueDate',
-        label: 'Date butoir',
-        type: 'date'
-    },
-    {
-        id: 'customer',
-        label: 'Client',
-        type: 'async-search',
-        options: {
-            endpoint: 'customerSearch',
-            minChars: 3,
-            placeholder: 'Rechercher un client...',
-            transformResponse: (data) => {
-                return data.map((customer: any) => ({
-                    value: customer._id,
-                    label: customer.name
-                }));
-            }
-        }
-    }
-];
 
 export const FILTER_OPERATORS: Record<string, { label: string; value: FilterOperator }[]> = {
     text: [
@@ -124,8 +25,13 @@ export const FILTER_OPERATORS: Record<string, { label: string; value: FilterOper
         { label: 'Après le', value: 'after' },
         { label: 'Entre', value: 'between' }
     ],
-    'async-search': [
-        { label: 'Est', value: 'equals' },
-        { label: "N'est pas", value: 'not_equals' }
+    number: [
+        { label: 'Est égal à', value: 'equals' },
+        { label: "N'est pas égal à", value: 'not_equals' },
+        { label: 'Est supérieur à', value: 'greater_than' },
+        { label: 'Est supérieur ou égal à', value: 'greater_than_equal' },
+        { label: 'Est inférieur à', value: 'less_than' },
+        { label: 'Est inférieur ou égal à', value: 'less_than_equal' },
+        { label: 'Est entre', value: 'between' }
     ]
 };

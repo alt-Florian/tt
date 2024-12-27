@@ -1,6 +1,7 @@
 import { CardResumeTask, CardTimer } from "@components/ui/CardTimer";
 import Layout from "@components/ui/Layout/Layout";
 import Overlays from "@components/ui/Layout/Overlay";
+import AuthGuard from "@components/ui/AuthGuard";
 import { BuildingOfficeIcon } from "@heroicons/react/20/solid";
 import BankDetailForm from "@pages/Config/BankDetails/BankDetailForm.page";
 import BankDetailList from "@pages/Config/BankDetails/BankDetailsList";
@@ -33,14 +34,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import MissionsPage from "@pages/Missions/Missions.page";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-interface IRoute {
-  path: string;
-  element: JSX.Element;
-  children?: { path?: string; element: JSX.Element; index?: boolean }[];
-}
-
 function App() {
-
   const {
     showResumeCard,
     currentTask,
@@ -50,85 +44,49 @@ function App() {
     stopTaskTimer,
   } = useMissionStore();
 
-
-  const routesWithoutLayout: IRoute[] = [
-
-    { path: "/signin", element: <SignInPage /> },
-  ];
-  const routesWithLayout: IRoute[] = [
-    { path: "/", element: <HomePage /> },
-    { path: "/users", element: <UsersListPage /> },
-         { path: "/missions", element: <MissionsPage /> },
-    { path: "/mission", element: <MissionPage /> },
-    {
-      path: "/configs",
-      element: <ConfigPage />,
-      children: [
-        { index: true, element: <Navigate to="bank-details" replace /> },
-        { path: "bank-details", element: <BankDetailList /> },
-        { path: "letter-templates", element: <LetterTemplateList /> },
-        { path: "natures", element: <NatureList /> },
-        { path: "prices", element: <PriceList /> },
-        { path: "blocks", element: <BlockList /> },
-        { path: "tasks", element: <TaskList /> },
-        { path: "customer-configs", element: <CustomerConfigList /> },
-      ],
-    },
-    { path: "/configs/bank-detail-form/:id?", element: <BankDetailForm /> },
-    {
-      path: "/configs/letter-template-form/:id?",
-      element: <LetterTemplateForm />,
-    },
-    { path: "/configs/block-form/:id?", element: <BlockForm /> },
-    { path: "/configs/nature-form/:id?", element: <NatureForm /> },
-    { path: "/configs/price-form/:id?", element: <PriceForm /> },
-    { path: "/configs/task-form/:id?", element: <TaskForm /> },
-    { path: "/configs/customer-form/:id?", element: <CustomerConfigForm /> },
-    {
-      path: "/customers/physical/:id",
-      element: <PhysicalCustomerFilePage />,
-      children: [
-        { index: true, element: <Navigate to="profile" replace /> },
-        { path: "profile", element: <PhysicalCustomerProfile /> },
-        { path: "enterprises", element: <PhysicalCustomerEnterprises /> },
-        { path: "missions", element: <Missions /> },
-      ],
-    },
-    {
-      path: "/customers/corporate/:id",
-      element: <CorporateCustomerFilePage />,
-      children: [
-        { index: true, element: <Navigate to="profile" replace /> },
-        { path: "profile", element: <CorporateCustomerProfile /> },
-        { path: "enterprises", element: <CorporateCustomerEnterprises /> },
-        { path: "missions", element: <Missions /> },
-      ],
-    },
-
-  ];
-
   return (
     <>
       <Routes>
-        {routesWithoutLayout.map((route: IRoute, index: number) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-        <Route path="/" element={<Layout />}>
-          {routesWithLayout.map((route: IRoute, index: number) => (
-            <Route key={index} path={route.path} element={route.element}>
-              {route.children?.map((childRoute, childIndex) => (
-                <Route
-                  key={childIndex}
-                  path={childRoute.path}
-                  element={childRoute.element}
-                  index={childRoute.index}
-                />
-              ))}
-            </Route>
-          ))}
+        <Route path="/signin" element={<SignInPage />} />
+        
+        <Route element={<AuthGuard><Layout /></AuthGuard>}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/users" element={<UsersListPage />} />
+          <Route path="/missions" element={<MissionsPage />} />
+          <Route path="/mission/:id" element={<MissionPage />} />
+          <Route path="/configs" element={<ConfigPage />}>
+            <Route index element={<Navigate to="bank-details" replace />} />
+            <Route path="bank-details" element={<BankDetailList />} />
+            <Route path="letter-templates" element={<LetterTemplateList />} />
+            <Route path="natures" element={<NatureList />} />
+            <Route path="prices" element={<PriceList />} />
+            <Route path="blocks" element={<BlockList />} />
+            <Route path="tasks" element={<TaskList />} />
+            <Route path="customer-configs" element={<CustomerConfigList />} />
+          </Route>
+          <Route path="/configs/bank-detail-form/:id?" element={<BankDetailForm />} />
+          <Route path="/configs/letter-template-form/:id?" element={<LetterTemplateForm />} />
+          <Route path="/configs/block-form/:id?" element={<BlockForm />} />
+          <Route path="/configs/nature-form/:id?" element={<NatureForm />} />
+          <Route path="/configs/price-form/:id?" element={<PriceForm />} />
+          <Route path="/configs/task-form/:id?" element={<TaskForm />} />
+          <Route path="/configs/customer-form/:id?" element={<CustomerConfigForm />} />
+          <Route path="/customers/physical/:id" element={<PhysicalCustomerFilePage />}>
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<PhysicalCustomerProfile />} />
+            <Route path="enterprises" element={<PhysicalCustomerEnterprises />} />
+            <Route path="missions" element={<Missions />} />
+          </Route>
+          <Route path="/customers/corporate/:id" element={<CorporateCustomerFilePage />}>
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<CorporateCustomerProfile />} />
+            <Route path="enterprises" element={<CorporateCustomerEnterprises />} />
+            <Route path="missions" element={<Missions />} />
+          </Route>
         </Route>
-      </Routes>
 
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {showResumeCard && !currentTask && (
         <div className="fixed bottom-4 right-4">
@@ -136,18 +94,17 @@ function App() {
         </div>
       )}
 
-
       {currentTask && (
         <div className="fixed bottom-4 right-4">
           <CardTimer
             title={currentTask.title}
             description={currentTask.description}
             companyName={currentTask.companyName}
-            time={currentTask.time} // ex: "00:13:33"
+            time={currentTask.time}
             icon={<BuildingOfficeIcon className="h-4 w-4 text-white" />}
-            isPaused={currentTask.isPaused} 
-            onTogglePause={() => { togglePauseTimer(); }}
-            onStop={() => { stopTaskTimer(); }}
+            isPaused={currentTask.isPaused}
+            onTogglePause={togglePauseTimer}
+            onStop={stopTaskTimer}
           />
         </div>
       )}

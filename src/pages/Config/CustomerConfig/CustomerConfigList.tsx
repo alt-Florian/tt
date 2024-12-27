@@ -1,11 +1,11 @@
 import { ConfigTable } from "@components/tables/ConfigTable";
 import CustomerConfigListViewModel from "./CustomerConfigList.viewmodel";
-import { BigSpinner } from "@components/ui/Spinner";
+import PageLoader from "@components/ui/PageLoader";
 
 export default function CustomerConfigList() {
   const { scope, data, isPending, isError, skip } =
     CustomerConfigListViewModel();
-  if (isPending) return <BigSpinner className="mt-6" />;
+  if (isPending) return (<PageLoader isLoading={isPending} message="Chargement des données..."/>);
   if (isError) return <p>Une erreur s'est produite</p>;
   if (!data) return <p>Données indisponibles</p>;
   return (

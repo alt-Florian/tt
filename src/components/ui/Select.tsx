@@ -25,7 +25,10 @@ interface SelectProps {
   ) => void;
   classNameLabel?: string;
   className?: string;
+  onSearch?: (term: string) => void;
+  searchPlaceholder?: string;
 }
+
 export default function Select({
   isOptional,
   list,
@@ -33,7 +36,9 @@ export default function Select({
   value,
   onChange,
   classNameLabel,
-  className=''
+  className='',
+  onSearch,
+  searchPlaceholder
 }: SelectProps) {
   //Function to fix types issue with onChange on Select elements
   const handleChange = (newValue: string | number) => {
@@ -45,7 +50,7 @@ export default function Select({
     onChange(fakeEvent);
   };
   // Find the name corresponding to the selected value
-  const selectedItem = list.find((item) => item.id === value);369
+  const selectedItem = list.find((item) => item.id === value);
   const selectedName = selectedItem ? selectedItem.name : value;
 
   return (
@@ -67,6 +72,17 @@ export default function Select({
           transition
           className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
         >
+          {onSearch && (
+            <div className="px-3 py-2">
+              <input
+                type="text"
+                className="w-full border border-gray-300 rounded-md px-2 py-1"
+                placeholder={searchPlaceholder}
+                onChange={(e) => onSearch(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
           {list.map((listItem, index) =>
             !isOptional &&
             (listItem.id === null || listItem.id === "") ? null : (

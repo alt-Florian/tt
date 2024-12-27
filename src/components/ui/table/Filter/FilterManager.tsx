@@ -1,86 +1,90 @@
 import { useFilterStore } from "@stores/FilterStore";
-import { FilterState } from "./types";
-import { FilterBuilder } from "./FilterBuilder";
-import { FilterSaver } from "./FilterSaver";
+import { FilterFieldConfig, FilterState } from "./types";
+import { Card, CardHeader, CardBody } from "@components/ui/Card";
 import { SavedFilters } from "./SavedFilters";
-
+import { FilterBuilder } from "./FilterBuilder";
+import { Button } from "@components/ui/Button/Button";
 
 interface FilterManagerProps {
   isOpen: boolean;
+  filters: FilterFieldConfig[];
   onApply: (filter: FilterState) => void;
   onClose: () => void;
 }
 
-export function FilterManager({ isOpen, onApply, onClose }: FilterManagerProps) {
+export function FilterManager({ isOpen,filters, onApply, onClose }: FilterManagerProps) {
   const { 
     currentFilter,
-    savedFilters,
     setConditions,
     setLogic,
-    addSavedFilter,
-    removeSavedFilter,
     reset
   } = useFilterStore();
 
   if (!isOpen) return null;
 
   return (
-    <div className="absolute left-0 mt-2 w-[800px] max-h-[80vh] overflow-y-auto bg-white rounded-md shadow-lg border border-gray-200 z-50">
-      <div className="p-4">
-        <h3 className="text-xl font-semibold mb-6">Filtrer les données</h3>
-        
-        
-        {/* Saved Filters */}
-   <SavedFilters />
-
-        {/* Filter Builder */}
-        <FilterBuilder 
-          conditions={currentFilter.conditions}
-          logic={currentFilter.logic}
-          onConditionsChange={setConditions}
-          onLogicChange={setLogic}
-        />
-
-        {/* Filter Saver */}
-        <FilterSaver 
-          onSave={(name) => {
-            addSavedFilter({
-              id: Date.now().toString(),
-              name,
-              conditions: currentFilter.conditions,
-              logic: currentFilter.logic
-            });
-          }}
-        />
-
-        {/* Actions */}
- <div className="flex justify-between mt-6">
-          <button
-            onClick={reset}
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
-            Réinitialiser
-          </button>
-          
-          <div className="flex gap-2">
+    <div className="absolute left-0 mt-2 w-[800px] bg-white dark:bg-dark-800 rounded-lg shadow-xl border border-gray-200 dark:border-dark-600 z-50">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              Filtrer les données
+            </h3>
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
             >
-              Annuler
-            </button>
-            <button
-              onClick={() => {
-                onApply(currentFilter);
-                onClose();
-              }}
-              className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800"
-            >
-              Appliquer le filtre
+              <span className="sr-only">Fermer</span>
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-        </div>
-      </div>
+        </CardHeader>
+
+        <CardBody className="space-y-6">
+          {/* Saved Filters */}
+          <SavedFilters />
+
+          {/* Filter Builder */}
+          <FilterBuilder 
+            conditions={currentFilter.conditions}
+            logic={currentFilter.logic}
+            onConditionsChange={setConditions}
+            onLogicChange={setLogic}
+            filters={filters}
+          />
+
+          {/* Actions */}
+          <div className="flex justify-between pt-6 border-t border-gray-200 dark:border-dark-600">
+            <Button 
+              variant="secondary"
+              onClick={reset}
+            >
+              Réinitialiser
+            </Button>
+            
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                onClick={onClose}
+              >
+                Annuler
+              </Button>
+              
+              <Button
+                variant="primary"
+                onClick={() => {
+                  onApply(currentFilter);
+                  onClose();
+                }}
+              >
+                Appliquer le filtre
+              </Button>
+            </div>
+          </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }

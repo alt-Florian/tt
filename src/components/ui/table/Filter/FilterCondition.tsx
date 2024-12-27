@@ -1,6 +1,5 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { AsyncSearchConfig, FilterCondition as FilterConditionType } from './types';
-import { FILTER_FIELDS } from './config';
+import { FilterCondition as FilterConditionType, FilterFieldConfig } from './types';
 import { FILTER_OPERATORS } from './config';
 import { DynamicSelect } from './components/DynamicSelect';
 import { DateInput } from './components/DateInput';
@@ -8,62 +7,67 @@ import { memo } from 'react';
 import MultiSelectV2 from '@components/ui/MultiSelectV2';
 import Select from '@components/ui/Select';
 import { BooleanInput } from './components/BooleanInput';
-import { AsyncSearchInput }  from './components/AsyncSearchInput';
+import { NumberInput } from './components/NumberInput';
 
 interface FilterConditionProps {
   condition: FilterConditionType;
+  filters: FilterFieldConfig[];
   isFirst: boolean;
   onDelete: () => void;
   onChange: (condition: FilterConditionType) => void;
+  usedFields: string[]
 }
-
-
 
 export const FilterCondition = memo(function FilterCondition({
   condition,
+  filters,
   isFirst,
   onDelete,
-  onChange
+  onChange,
+  usedFields 
 }: FilterConditionProps) {
-  const field = FILTER_FIELDS.find(f => f.id === condition.field);
+  const field = filters.find(f => f.id === condition.field);
   const operators = field ? FILTER_OPERATORS[field.type] : [];
-
-
+  
+  const availableFields = filters.filter(field => {
+    if (!field.singleUse) return true;
+    return !usedFields.includes(field.id) || field.id === condition.field;
+  });
+  
   const renderValueInput = () => {
     if (!field) return null;
 
-    if (field.type === 'select') {
-      if (typeof field.options === 'object' && 'endpoint' in field.options) {
+    switch (field.type) {
+      case 'select':
+        if (typeof field.options === 'object' && 'endpoint' in field.options) {
+          return (
+            <DynamicSelect
+              config={field.options}
+              value={condition.value as string}
+              onChange={(value) => onChange({ ...condition, value })}
+              multiSelect={field.multiSelect}
+            />
+          );
+        } else if (Array.isArray(field.options)) {
+          return field.multiSelect ? (
+            <MultiSelectV2
+              list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
+              values={Array.isArray(condition.value) ? condition.value : []}
+              onChange={(value) => onChange({ ...condition, value })}
+              className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
+              label=''
+            />
+          ) : (
+            <Select
+              list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
+              value={condition.value as string}
+              onChange={(e) => onChange({ ...condition, value: e.target.value })}
+              className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
+            />
+          );
+        };
+      case 'date': 
         return (
-          <DynamicSelect
-            config={field.options}
-            value={condition.value as string}
-            onChange={(value) => onChange({ ...condition, value })}
-            multiSelect={field.multiSelect}
-          />
-        );
-      } else if (Array.isArray(field.options)) {
-       return field.multiSelect ? (
-        <MultiSelectV2
-          list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
-          values={Array.isArray(condition.value) ? condition.value : []}
-          onChange={(value) => onChange({ ...condition, value })}
-          className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
-          label=''
-        />
-      ) : (
-        <Select
-          list={field.options.map(opt => ({ id: opt.value, name: opt.label }))}
-          value={condition.value as string}
-          onChange={(e) => onChange({ ...condition, value: e.target.value })}
-          className="rounded-md border-gray-300 text-sm min-w-[150px] flex-1"
-        />
-      );
-      }
-    }
-
-    if (field.type === 'date') {
-      return (
         <DateInput
           value={condition.value as Date}
           onChange={(date) => onChange({ ...condition, value: date })}
@@ -73,35 +77,28 @@ export const FilterCondition = memo(function FilterCondition({
             undefined}
           endDate={condition.endDate as Date}
         />
+        );
+      case 'boolean': 
+        return (
+        <BooleanInput
+          value={condition.value as boolean}
+          onChange={(value) => onChange({ ...condition, value })}
+        />
+        );
+       case 'number':
+        return (
+        <NumberInput
+          value={condition.value as number}
+          onChange={(value) => onChange({ ...condition, value })}
+          isBetween={condition.operator === 'between'}
+          onEndValueChange={condition.operator === 'between' ? 
+            (value) => onChange({ ...condition, endValue: value }) : 
+            undefined}
+          endValue={condition.endValue as number}
+        />
       );
-}
-
-if (field.type === 'boolean') {
-  return (
-    <BooleanInput
-      value={condition.value as boolean}
-      onChange={(value) => onChange({ ...condition, value })}
-    />
-  );
-}
-  if (field.type === 'async-search' && typeof field.options === 'object' && 'endpoint' in field.options) {
-    const config: AsyncSearchConfig = {
-      endpoint: field.options.endpoint,
-      minChars: 3,
-      placeholder: 'blabla',
-      transformResponse: field.options.transformResponse
-    };
-
-    return (
-      <AsyncSearchInput
-        config={config}
-        value={condition.value as string}
-        onChange={onChange}
-      />
-    );
-  }
-
-    return (
+      default: 
+        return (
       <input
         type="text"
         value={condition.value as string}
@@ -110,11 +107,12 @@ if (field.type === 'boolean') {
         placeholder="Valeur"
       />
     );
+    }
+
+
   };
 
-
-
-  return (
+return (
     <div className="flex items-center gap-2 w-full">
       <span className="text-sm font-medium text-gray-700 min-w-[60px]">
         {isFirst ? 'Lorsque' : 'Et'}
@@ -125,7 +123,7 @@ if (field.type === 'boolean') {
         onChange={(e) => onChange({ ...condition, field: e.target.value })}
         className="rounded-md border-gray-300 text-sm min-w-[150px]"
       >
-        {FILTER_FIELDS.map(field => (
+        {availableFields.map(field => (
           <option key={field.id} value={field.id}>
             {field.label}
           </option>
@@ -134,7 +132,11 @@ if (field.type === 'boolean') {
 
       <select 
         value={condition.operator}
-        onChange={(e) => onChange({ ...condition, operator: e.target.value as FilterConditionType['operator'] })}
+        onChange={(e) => onChange({ 
+          ...condition, 
+          operator: e.target.value as FilterConditionType['operator'],
+          endValue: e.target.value === 'between' ? condition.endValue : undefined 
+        })}
         className="rounded-md border-gray-300 text-sm min-w-[120px]"
       >
         {operators.map(op => (
@@ -144,7 +146,7 @@ if (field.type === 'boolean') {
         ))}
       </select>
 
-       {renderValueInput()}
+      {renderValueInput()}
 
       <div className="flex-shrink-0">
         <button
@@ -157,4 +159,4 @@ if (field.type === 'boolean') {
       </div>
     </div>
   );
-})
+});

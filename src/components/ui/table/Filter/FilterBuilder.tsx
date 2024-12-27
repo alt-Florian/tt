@@ -1,20 +1,33 @@
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { FilterCondition } from './FilterCondition';
-import { FilterCondition as FilterConditionType, FilterLogic } from './types';
+import { FilterCondition as FilterConditionType, FilterFieldConfig, FilterLogic } from './types';
+import { Button } from '@components/ui/Button/Button';
 
 interface FilterBuilderProps {
   conditions: FilterConditionType[];
   logic: FilterLogic;
   onConditionsChange: (conditions: FilterConditionType[]) => void;
   onLogicChange: (logic: FilterLogic) => void;
+  filters:  FilterFieldConfig[]
 }
 
 export function FilterBuilder({ 
   conditions, 
-  logic,
   onConditionsChange,
-  onLogicChange 
+  onLogicChange,
+  filters
 }: FilterBuilderProps) {
+
+  const usedFields = conditions.map(c => c.field);
+  
+  // Vérifier s'il reste des champs disponibles
+  const availableFields = filters.filter(field => {
+    if (!field.singleUse) return true;
+    return !usedFields.includes(field.id);
+  });
+
+  const hasAvailableFields = availableFields.length > 0;
+
   const addCondition = () => {
     onConditionsChange([...conditions, {
       id: Date.now().toString(),
@@ -36,43 +49,28 @@ export function FilterBuilder({
 
   return (
     <div className="space-y-4">
-      {/* <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm font-medium text-gray-700">Logique:</span>
-        <select
-          value={logic}
-          onChange={(e) => onLogicChange(e.target.value as FilterLogic)}
-          className="rounded-md border-gray-300 text-sm"
-        >
-          <option value="and">ET</option>
-          <option value="or">OU</option>
-        </select>
-      </div> */}
-
       {conditions.map((condition, index) => (
         <FilterCondition
           key={condition.id}
+          filters={filters}
           condition={condition}
           isFirst={index === 0}
           onDelete={() => removeCondition(condition.id)}
           onChange={(updatedCondition) => updateCondition(condition.id, updatedCondition)}
+          usedFields={usedFields}
         />
       ))}
 
-      <div className="flex justify-between">
-        <button
+      <div className="flex justify-between pt-4">
+        <Button
+          variant="secondary"
           onClick={addCondition}
-          className="inline-flex items-center mb-3 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+           disabled={!hasAvailableFields}
+          className="flex items-center gap-2"
         >
-          <PlusIcon className="w-4 h-4 mr-1" />
-                  {conditions.length>0?`Ajouter une condition`:`Créer un filtre`}
-        </button>
-
-        <button
-          onClick={() => onConditionsChange([])}
-          className="text-sm text-gray-600 hover:text-gray-900"
-        >
-          Réinitialiser
-        </button>
+          <PlusIcon className="h-4 w-4" />
+          {conditions.length > 0 ? 'Ajouter une condition' : 'Créer un filtre'}
+        </Button>
       </div>
     </div>
   );

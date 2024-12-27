@@ -3,7 +3,7 @@ import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
 import { ColumnManager } from './ColumnManager/ColumnManager';
 import { FilterManager } from './Filter/FilterManager';
-import { FilterState } from './Filter/types';
+import { FilterFieldConfig, FilterState } from './Filter/types';
 import { tableHelper } from '@utils/table';
 
 
@@ -17,6 +17,7 @@ export interface Column {
 export interface TableProps {
   data: any[] | undefined;
   columns: Column[];
+  filters: FilterFieldConfig[];
   onSearch: (query: string) => void;
   onFilter: (filter: FilterState) => void;
   onPaginationChange: (skip: number) => void;
@@ -32,6 +33,7 @@ export interface TableProps {
 export function EnhancedTable({ 
   data, 
   columns: initialColumns, 
+  filters,
   onSearch, 
   onFilter,
   skip,
@@ -58,7 +60,8 @@ export function EnhancedTable({
         {/* Filter Manager */}
         <div className="relative">
         <FilterManager
-          isOpen={isFilterOpen}
+            isOpen={isFilterOpen}
+            filters={filters}
           onClose={() => setIsFilterOpen(false)}
           onApply={(filter) => {
             onFilter(filter);
