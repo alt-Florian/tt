@@ -1,5 +1,5 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
-import { FilterCondition as FilterConditionType } from './types';
+import { AsyncSearchConfig, FilterCondition as FilterConditionType } from './types';
 import { FILTER_FIELDS } from './config';
 import { FILTER_OPERATORS } from './config';
 import { DynamicSelect } from './components/DynamicSelect';
@@ -16,6 +16,8 @@ interface FilterConditionProps {
   onDelete: () => void;
   onChange: (condition: FilterConditionType) => void;
 }
+
+
 
 export const FilterCondition = memo(function FilterCondition({
   condition,
@@ -82,18 +84,22 @@ if (field.type === 'boolean') {
     />
   );
 }
-if (field.type === 'async-search' && 'endpoint' in field?.options) {
-  return (
-    <AsyncSearchInput
-     
-      endpoint={field.options.endpoint}
-      minChars={field.options.minChars}
-      value={condition.value as string}
-      onChange={(value) => onChange({ ...condition, value })}
-      placeholder={field.options.placeholder}
-    />
-  );
-}
+  if (field.type === 'async-search' && typeof field.options === 'object' && 'endpoint' in field.options) {
+    const config: AsyncSearchConfig = {
+      endpoint: field.options.endpoint,
+      minChars: 3,
+      placeholder: 'blabla',
+      transformResponse: field.options.transformResponse
+    };
+
+    return (
+      <AsyncSearchInput
+        config={config}
+        value={condition.value as string}
+        onChange={onChange}
+      />
+    );
+  }
 
     return (
       <input

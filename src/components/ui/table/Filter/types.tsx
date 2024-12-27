@@ -1,4 +1,4 @@
-export type FilterOperator = 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with'  | 'before' | 'after'  | 'between';  
+export type FilterOperator = 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with' | 'before' | 'after' | 'between';
 
 export type FilterLogic = 'and' | 'or';
 
@@ -8,7 +8,8 @@ export interface FilterCondition {
   id: string;
   field: string;
   operator: FilterOperator;
-  value: string | number | boolean;
+  value: string | number | boolean | Date | null;
+  endDate?: Date | null; // For 'between' date operator
 }
 
 export interface SavedFilterType {
@@ -28,18 +29,23 @@ export interface SelectOption {
   label: string;
 }
 
-export interface DynamicSelectConfig {
+// Base configuration for dynamic data fetching
+interface BaseConfig {
   endpoint: string;
   valueKey?: string;
   labelKey?: string;
   transformResponse?: (data: any) => SelectOption[];
 }
 
-export interface AsyncSearchConfig {
-  endpoint: string;
+// Configuration for DynamicSelect component
+export interface DynamicSelectConfig extends BaseConfig {
+  multiSelect?: boolean;
+}
+
+// Configuration for AsyncSearchInput component
+export interface AsyncSearchConfig extends BaseConfig {
   minChars?: number;
   placeholder?: string;
-   transformResponse?: (data: any) => SelectOption[];
 }
 
 export interface FilterFieldConfig {
@@ -47,5 +53,5 @@ export interface FilterFieldConfig {
   label: string;
   type: FilterFieldType;
   options?: SelectOption[] | DynamicSelectConfig | AsyncSearchConfig;
-  multiSelect?: boolean; 
+  multiSelect?: boolean;
 }

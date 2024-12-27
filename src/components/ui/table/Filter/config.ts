@@ -1,6 +1,5 @@
 import { FilterFieldConfig, FilterOperator } from './types';
 
-
 export const FILTER_FIELDS: FilterFieldConfig[] = [
     {
         id: 'name',
@@ -11,7 +10,7 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         id: 'refLawyer',
         label: 'Responsable',
         type: 'select',
-        multiSelect: false, 
+        multiSelect: false,
         options: {
             endpoint: 'users',
             valueKey: 'id',
@@ -24,11 +23,11 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
             }
         }
     },
-        {
+    {
         id: 'collabList',
         label: 'Collaborateur(s)',
         type: 'select',
-        multiSelect: true, 
+        multiSelect: true,
         options: {
             endpoint: 'users',
             valueKey: 'id',
@@ -45,7 +44,7 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         id: 'template',
         label: 'Template',
         type: 'select',
-        multiSelect: false, // Sélection unique
+        multiSelect: false,
         options: {
             endpoint: 'letterTemplates',
             valueKey: '_id',
@@ -74,31 +73,31 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         type: 'boolean'
     },
     {
-    id: 'startingDate',
-    label: 'Date de création',
-    type: 'date'  // Add type specification
-  },
-  {
-    id: 'dueDate',
-    label: 'Date butoir',
-    type: 'date'  // Add type specification
-  },
-  {
-    id: 'customer',
-    label: 'Client',
-    type: 'async-search',
-    options: {
-      endpoint: 'customerSearch',
-      minChars: 3,
-        placeholder: 'Rechercher un client...',
-        transformResponse: (data) => {
-            return data.map((template: any) => ({
-                value: template._id,
-                label: template.name
-            }));
+        id: 'startingDate',
+        label: 'Date de création',
+        type: 'date'
+    },
+    {
+        id: 'dueDate',
+        label: 'Date butoir',
+        type: 'date'
+    },
+    {
+        id: 'customer',
+        label: 'Client',
+        type: 'async-search',
+        options: {
+            endpoint: 'customerSearch',
+            minChars: 3,
+            placeholder: 'Rechercher un client...',
+            transformResponse: (data) => {
+                return data.map((customer: any) => ({
+                    value: customer._id,
+                    label: customer.name
+                }));
+            }
         }
     }
-  }
 ];
 
 export const FILTER_OPERATORS: Record<string, { label: string; value: FilterOperator }[]> = {
@@ -125,8 +124,8 @@ export const FILTER_OPERATORS: Record<string, { label: string; value: FilterOper
         { label: 'Après le', value: 'after' },
         { label: 'Entre', value: 'between' }
     ],
-    "async-search": [
-          { label: 'Est', value: 'equals' },
-        { label: "N'est pas", value: 'not_equals' },
+    'async-search': [
+        { label: 'Est', value: 'equals' },
+        { label: "N'est pas", value: 'not_equals' }
     ]
 };
