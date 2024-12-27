@@ -1,6 +1,7 @@
 import {  FilterFieldConfig, FilterOperator } from './types';
 
-export const FILTER_FIELDS: FilterFieldConfig [] = [
+
+export const FILTER_FIELDS: FilterFieldConfig[] = [
     {
         id: 'name',
         label: 'Nom de la mission',
@@ -10,10 +11,33 @@ export const FILTER_FIELDS: FilterFieldConfig [] = [
         id: 'responsible',
         label: 'Responsable',
         type: 'select',
-        options: [
-            { value: 'mathieu', label: 'Mathieu Perree' },
-            { value: 'anne', label: 'Anne Dupont' }
-        ]
+        options: {
+            endpoint: 'users',
+            valueKey: '_id',
+            labelKey: 'name',
+            transformResponse: (data) => {
+                return data.map((user: any) => ({
+                    value: user._id,
+                    label: `${user.firstname} ${user.lastname}`
+                }));
+            }
+        }
+    },
+    {
+        id: 'template',
+        label: 'Template',
+        type: 'select',
+        options: {
+            endpoint: 'letterTemplates',
+            valueKey: '_id',
+            labelKey: 'name',
+            transformResponse: (data) => {
+                return data.map((template: any) => ({
+                    value: template._id,
+                    label: template.name
+                }));
+            }
+        }
     },
     {
         id: 'status',

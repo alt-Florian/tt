@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
 export interface Badge {
-  text: string;
+  text?: string;
   bgColor?: string;
   textColor?: string;
   ringColor?: string;
@@ -12,7 +12,7 @@ export interface Badge {
 interface BadgeProps extends Badge {}
 
 export const Badge: React.FC<BadgeProps> = ({
-  text,
+  text='',
   bgColor = "bg-gray-50",
   textColor = "text-gray-600",
   ringColor = "ring-gray-500/10",
@@ -30,6 +30,32 @@ export const Badge: React.FC<BadgeProps> = ({
             {icon}
           </div>
         ) : null}
+      </div>
+    </>
+  );
+};
+
+
+export const BadgeIconLeft: React.FC<BadgeProps> = ({
+  text='',
+  bgColor = "bg-gray-50",
+  textColor = "text-gray-600",
+  ringColor = "ring-gray-500/10",
+  icon,
+  onIconClick,
+}) => {
+  return (
+    <>
+      <div
+        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${bgColor} ${textColor} ${ringColor}`}
+      >
+        {icon ? (
+          <div onClick={onIconClick} className="cursor-pointer">
+            {icon}
+          </div>
+        ) : null}
+        {text}
+        
       </div>
     </>
   );

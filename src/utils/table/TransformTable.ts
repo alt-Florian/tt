@@ -1,5 +1,6 @@
 import { UserData } from "@interfaces/user/User.interface"
 import { getFrDate } from "@utils/date.utils";
+import Globals from "@utils/Globals";
 
 export class TransformTable {
 
@@ -38,6 +39,14 @@ export class TransformTable {
     }
 
     customer(value: any[]) {
-        return value[0].name || '';
+        if (!value || value.length === 0) return '';
+        const customer = value[0];
+        const firstname = customer.row_infos?.firstname || '';
+        return {
+            type: 'customer',
+            value: `${customer.name} ${firstname.slice(0, 1).toUpperCase()}` || '',
+            customerType: customer.type,
+            civilities: Globals.civilities.find(civ => civ.value === customer.row_infos?.civilities)?.short || ''
+        };
     }
 }

@@ -1,7 +1,9 @@
 import { TrashIcon } from '@heroicons/react/20/solid';
 import { FilterCondition as FilterConditionType } from './types';
-import { FILTER_FIELDS, FILTER_OPERATORS } from './config';
-
+import { FILTER_FIELDS } from './config';
+import { FILTER_OPERATORS } from './config';
+import { DynamicSelect } from './components/DynamicSelect';
+import { memo } from 'react';
 interface FilterConditionProps {
   condition: FilterConditionType;
   isFirst: boolean;
@@ -9,7 +11,7 @@ interface FilterConditionProps {
   onChange: (condition: FilterConditionType) => void;
 }
 
-export function FilterCondition({
+export const FilterCondition = memo(function FilterCondition({
   condition,
   isFirst,
   onDelete,
@@ -17,6 +19,49 @@ export function FilterCondition({
 }: FilterConditionProps) {
   const field = FILTER_FIELDS.find(f => f.id === condition.field);
   const operators = field ? FILTER_OPERATORS[field.type] : [];
+
+
+  const renderValueInput = () => {
+    if (!field) return null;
+
+    if (field.type === 'select') {
+      if (typeof field.options === 'object' && 'endpoint' in field.options) {
+        return (
+          <DynamicSelect
+            config={field.options}
+            value={condition.value as string}
+            onChange={(value) => onChange({ ...condition, value })}
+          />
+        );
+      } else if (Array.isArray(field.options)) {
+        return (
+          <select
+            value={condition.value as string}
+            onChange={(e) => onChange({ ...condition, value: e.target.value })}
+            className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
+          >
+            {field.options.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        );
+      }
+    }
+
+    return (
+      <input
+        type="text"
+        value={condition.value as string}
+        onChange={(e) => onChange({ ...condition, value: e.target.value })}
+        className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
+        placeholder="Valeur"
+      />
+    );
+  };
+
+
 
   return (
     <div className="flex items-center gap-2 w-full">
@@ -48,27 +93,7 @@ export function FilterCondition({
         ))}
       </select>
 
-      {field?.type === 'select' && field.options ? (
-        <select
-          value={condition.value as string}
-          onChange={(e) => onChange({ ...condition, value: e.target.value })}
-          className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
-        >
-          {field.options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <input
-          type="text"
-          value={condition.value as string}
-          onChange={(e) => onChange({ ...condition, value: e.target.value })}
-          className="rounded-md border-gray-300 text-sm flex-1 min-w-[120px]"
-          placeholder="Valeur"
-        />
-      )}
+       {renderValueInput()}
 
       <div className="flex-shrink-0">
         <button
@@ -81,4 +106,4 @@ export function FilterCondition({
       </div>
     </div>
   );
-}
+})
