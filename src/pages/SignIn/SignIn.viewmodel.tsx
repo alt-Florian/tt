@@ -10,7 +10,7 @@ export function SignInViewModel() {
   const navigate = useNavigate();
   const { mutate, isError, error, isPending } = authService.signIn();
   const { setAuthState } = useAuthStore();
-  const  { setInitFilters }  = useFilterStore();
+  const { setInitFilters }  = useFilterStore();
 
   const signIn = (credentials: SignInCredentials) => {
     mutate(credentials, {

@@ -1,4 +1,4 @@
-import { Filter } from "@interfaces/auth/Filter.interface";
+import { FilterDefinition } from "@utils/table/interfaces";
 
 export interface SignInResponse {
   statusCode: number;
@@ -14,7 +14,7 @@ export interface SignInResponse {
       createdAt: string; // ISO Date format
       updatedAt: string; // ISO Date format
     };
-    filters: Filter[];
+    filters: FilterDefinition[];
     token: string;
     refreshToken: string;
     tokenExpireDate: string | null;

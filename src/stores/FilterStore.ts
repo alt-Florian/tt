@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { FilterState, SavedFilterType, FilterCondition, FilterLogic } from '@components/ui/table/Filter/types'
 import { initialSavedFilters } from './data/savedFilters';
+import { FilterDefinition } from '@utils/table/interfaces';
+import { FilterConverter } from '@utils/table/FilterConverter';
 
 interface FilterStore {
     currentFilter: FilterState;
@@ -10,12 +12,16 @@ interface FilterStore {
     addSavedFilter: (filter: SavedFilterType) => void;
     removeSavedFilter: (id: string) => void;
     reset: () => void;
+    setInitFilters: (filters: FilterDefinition[]) => void;
 }
 
 const initialState: FilterState = {
     conditions: [],
     logic: 'and'
 };
+
+const converter = new FilterConverter();
+
 
 export const useFilterStore = create<FilterStore>((set) => ({
     currentFilter: initialState,
@@ -37,8 +43,11 @@ export const useFilterStore = create<FilterStore>((set) => ({
             savedFilters: state.savedFilters.filter(f => f.id !== id)
         })),
     reset: () => set({ currentFilter: initialState }),
-    setInitFilters: (filters: SavedFilterType[]) =>
-        set(() => ({
-            savedFilters: [...filters]
-        })),
+
+    setInitFilters: (filters: FilterDefinition[]) => {
+        const filterss = converter.convert(filters);
+        console.log("🚀 ~ set ~ filterss:", filterss)
+
+        set({ savedFilters: [...filterss] });
+    },
 }));

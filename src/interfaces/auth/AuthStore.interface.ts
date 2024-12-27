@@ -1,4 +1,4 @@
-import { Filter } from "@interfaces/auth/Filter.interface";
+import { FilterDefinition } from "@utils/table/interfaces";
 
 interface User {
   email: string;
@@ -11,7 +11,7 @@ export interface AuthState {
   token: string | null;
   refreshToken: string | null;
   user: User | null;
-  filters: Filter[];
+  filters: FilterDefinition[];
   setAuthState: (newState: Partial<AuthState>) => void;
   clearAuthState: () => void;
 }

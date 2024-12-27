@@ -1,12 +1,13 @@
 import { useFilterStore } from "@stores/FilterStore";
 import { SavedFilter } from "./SavedFilter";
 import { Card, CardBody } from "@components/ui/Card";
+import { FilterConverter } from "@utils/table/FilterConverter";
+import { FilterDefinition } from "@utils/table/interfaces";
 
 
 export function SavedFilters() {
   const { savedFilters } = useFilterStore();
   console.log("🚀 ~ SavedFilters ~ savedFilters:", savedFilters)
-
 
 
 
