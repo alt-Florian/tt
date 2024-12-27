@@ -1,7 +1,7 @@
 import { CardResumeTask, CardTimer } from "@components/ui/CardTimer";
 import Layout from "@components/ui/Layout/Layout";
 import Overlays from "@components/ui/Layout/Overlay";
-import { BuildingOfficeIcon, PlayIcon } from "@heroicons/react/20/solid";
+import { BuildingOfficeIcon } from "@heroicons/react/20/solid";
 import BankDetailForm from "@pages/Config/BankDetails/BankDetailForm.page";
 import BankDetailList from "@pages/Config/BankDetails/BankDetailsList";
 import BlockForm from "@pages/Config/Block/BlockForm.page";

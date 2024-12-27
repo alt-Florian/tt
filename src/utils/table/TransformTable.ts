@@ -1,11 +1,12 @@
 import { UserData } from "@interfaces/user/User.interface"
+import { getFrDate } from "@utils/date.utils";
 
 export class TransformTable {
 
 
-    protected fields = ['refLawyer', 'collabList', 'm_progress']
-
     protected users: any[] = [];
+
+    protected lettersTemplate: any[] = [];
 
 
 
@@ -22,5 +23,21 @@ export class TransformTable {
 
     m_progress(value: number) {
         return { type: 'progress', value };
+    }
+
+    letterTemplate(value: string) {
+        return this.lettersTemplate.find(letter => letter._id === value).name || 'N/A';
+    }
+
+    formatDateFr(value: Date): string {
+        return getFrDate(value)
+    }
+
+    billing(value: boolean) {
+        return { type: 'icon_boolean', value };
+    }
+
+    customer(value: any[]) {
+        return value[0].name || '';
     }
 }

@@ -19,4 +19,11 @@ export const useConfigStore = create<ConfigState>((set) => ({
     set({
       skip: 0,
     }),
+  
+  lettersTemplate: [],
+  isLoading: false,
+  error: null,
+  setLettersTemplate: (lettersTemplate) => set({ lettersTemplate }),
+  setError: (error) => set({ error }),
+  setLoading: (isLoading) => set({ isLoading })
 }));

@@ -4,6 +4,7 @@ import { useMissionsViewModel } from "./Missions.viewmodel";
 import { useNavigate } from "react-router-dom";
 import { tableHelper } from "@utils/table";
 import { userService } from "@services/User.service";
+import { letterTemplateService } from "@services/config/LetterTemplate.service";
 
 export default function MissionsPage() {
   const { 
@@ -21,6 +22,9 @@ export default function MissionsPage() {
 
   const { users } = userService.getCached();
   tableHelper.setUsers(users)
+
+  const { lettersTemplate } = letterTemplateService.getCached()
+  tableHelper.setLettersTemplate(lettersTemplate)
   
   if (isLoading) return <div>Chargement...</div>;
   if (error) return <div>Une erreur est survenue</div>;

@@ -5,6 +5,11 @@ export const MISSION_COLUMNS = [
     visible: true
   },
   {
+    id: 'customer',
+    label: 'Client',
+    visible: true
+  },
+  {
     id: 'refLawyer',
     label: 'Responsable',
     visible: true
@@ -15,7 +20,7 @@ export const MISSION_COLUMNS = [
     visible: true
   },
   {
-    id: 'template',
+    id: 'letterTemplate',
     label: 'Template',
     visible: true
   },
@@ -25,8 +30,18 @@ export const MISSION_COLUMNS = [
     visible: true
   },
   {
-    id: 'urgent',
-    label: 'Urgent',
+    id: 'startingDate',
+    label: 'Date de création',
+    visible: true
+  },
+  {
+    id: 'dueDate',
+    label: 'Date butoir',
+    visible: true
+  },
+  {
+    id: 'billing',
+    label: 'Facturée',
     visible: true
   },
 

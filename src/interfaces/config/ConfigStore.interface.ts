@@ -1,3 +1,5 @@
+import { LetterTemplateData } from "./LetterTemplate.interface";
+
 export interface ConfigState {
   scope: number;
   skip: number;
@@ -5,4 +7,10 @@ export interface ConfigState {
   setSkip: (skip: number) => void;
   clearConfigScope: () => void;
   clearPagination: () => void;
+  lettersTemplate: LetterTemplateData[];
+  isLoading: boolean;
+  error: Error | null;
+  setLettersTemplate: (users: LetterTemplateData[]) => void;
+  setError: (error: Error | null) => void;
+  setLoading: (isLoading: boolean) => void;
 }
