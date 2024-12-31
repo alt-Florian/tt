@@ -19,7 +19,7 @@ const EditableTextWithSelect = ({
   classNameOptions,
 }: EditableTextProps) => {
   const [value, setValue] = useState(
-    options.find((option) => option.text === selected)?.value ??
+    options.find((option) => option.text === selected)?.value ||
       options[0].value
   );
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -41,7 +41,7 @@ const EditableTextWithSelect = ({
     >
   ) => {
     setValue(event.target.value);
-    if (value) onUpdate(value);
+    onUpdate(event.target.value);
     setIsSelectOpen(false);
   };
 
@@ -53,7 +53,7 @@ const EditableTextWithSelect = ({
           value={value}
           onChange={handleChange}
           onBlur={handleChange}
-          className={`p-0 ${classNameSelect}`}
+          className={`p-0 cursor-pointer ${classNameSelect}`}
         >
           {options.map((option) => (
             <option
@@ -66,7 +66,10 @@ const EditableTextWithSelect = ({
           ))}
         </select>
       ) : (
-        <span onClick={handleTextClick} className={`p-0 ${classNameText}`}>
+        <span
+          onClick={handleTextClick}
+          className={`p-0 cursor-pointer ${classNameText}`}
+        >
           {options.find((option) => option.value === Number(value))?.text || ""}
         </span>
       )}

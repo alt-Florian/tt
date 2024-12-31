@@ -34,6 +34,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import MissionsPage from "@pages/Missions/Missions.page";
 import { Navigate, Route, Routes } from "react-router-dom";
 
+
+
 function App() {
   const {
     showResumeCard,
@@ -48,10 +50,11 @@ function App() {
     <>
       <Routes>
         <Route path="/signin" element={<SignInPage />} />
-        
+          
         <Route element={<AuthGuard><Layout /></AuthGuard>}>
           <Route path="/" element={<HomePage />} />
           <Route path="/users" element={<UsersListPage />} />
+    
           <Route path="/missions" element={<MissionsPage />} />
           <Route path="/mission/:id" element={<MissionPage />} />
           <Route path="/configs" element={<ConfigPage />}>

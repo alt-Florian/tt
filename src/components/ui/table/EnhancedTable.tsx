@@ -21,22 +21,22 @@ export interface TableProps {
   onSearch: (query: string) => void;
   onFilter: (filter: FilterState) => void;
   onPaginationChange: (skip: number) => void;
+  onColumnChange: (columns: Column[]) => void;
   transformer: typeof tableHelper;
   skip: number;
   count: number;
   take: number;
   path: string;
-
 }
-
 
 export function EnhancedTable({ 
   data, 
-  columns: initialColumns, 
+  columns, 
   filters,
   onSearch, 
   onFilter,
   skip,
+  onColumnChange,
   count,
   take,
   onPaginationChange,
@@ -44,7 +44,7 @@ export function EnhancedTable({
   path
 }: TableProps) {
   
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
+
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isColumnManagerOpen, setIsColumnManagerOpen] = useState(false);
 
@@ -61,9 +61,10 @@ export function EnhancedTable({
         <div className="relative">
         <FilterManager
             isOpen={isFilterOpen}
+            columns={columns}
             filters={filters}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={(filter) => {
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(filter) => {
             onFilter(filter);
             setIsFilterOpen(false);
           }}
@@ -73,7 +74,7 @@ export function EnhancedTable({
         <ColumnManager 
           isOpen={isColumnManagerOpen}
           columns={columns}
-          onColumnChange={setColumns}
+          onColumnChange={onColumnChange}
           />
           </div>
       </div>

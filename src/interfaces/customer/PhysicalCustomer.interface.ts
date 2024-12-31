@@ -22,36 +22,36 @@ export interface PhysicalCustomerCreateResponse {
 }
 
 export interface PhysicalCustomerUpdate {
-  name?: string;
-  email1?: string;
+  name?: string | null;
+  email1?: string | null;
   type?: string;
-  infos?: string;
+  infos?: string | null;
   row_infos?: {
-    phone1?: string;
+    phone1?: string | null;
     refAddress?: string;
-    address1?: string;
-    city1?: string;
-    zip1?: string;
-    firstname?: string;
-    birthName?: string;
+    address1?: string | null;
+    city1?: string | null;
+    zip1?: string | null;
+    firstname?: string | null;
+    birthName?: string | null;
     civilities?: number;
-    birthday?: string;
-    birthLocation?: string;
-    nationality?: string;
-    nin?: number;
-    civilStats?: number;
-    marriageSettlement?: number;
-    unionDate?: string;
-    dieDate?: string;
-    unionPlace?: string;
-    minority?: boolean;
-    die?: boolean;
-    email2?: string;
-    phone2?: string;
-    address2?: string;
-    city2?: string;
-    zip2?: string;
-    company?: string;
+    birthday?: string | null;
+    birthLocation?: string | null;
+    nationality?: string | null;
+    nin?: number | null;
+    civilStats?: number | null;
+    marriageSettlement?: number | null;
+    unionDate?: string | null;
+    dieDate?: string | null;
+    unionPlace?: string | null;
+    minority?: boolean | null;
+    die?: boolean | null;
+    email2?: string | null;
+    phone2?: string | null;
+    address2?: string | null;
+    city2?: string | null;
+    zip2?: string | null;
+    company?: string | null;
   };
 }
 

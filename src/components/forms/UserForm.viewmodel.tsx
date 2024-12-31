@@ -106,13 +106,15 @@ export function UserFormViewModel(handleClose: () => void, id?: number) {
               },
               onError: (error) => {
                 console.log(error);
-                showDialogBox({
-                  ...dialogService.errorMessage(),
-                  onClick: () => {
-                    hideDialogBox();
-                  },
-                });
-                handleClose();
+                if (error.status !== 409) {
+                  showDialogBox({
+                    ...dialogService.errorMessage(),
+                    onClick: () => {
+                      hideDialogBox();
+                    },
+                  });
+                  handleClose();
+                }
               },
             }
           );
@@ -130,13 +132,15 @@ export function UserFormViewModel(handleClose: () => void, id?: number) {
             },
             onError: (error) => {
               console.log(error);
-              showDialogBox({
-                ...dialogService.errorMessage(),
-                onClick: () => {
-                  hideDialogBox();
-                },
-              });
-              handleClose();
+              if (error.status !== 409) {
+                showDialogBox({
+                  ...dialogService.errorMessage(),
+                  onClick: () => {
+                    hideDialogBox();
+                  },
+                });
+                handleClose();
+              }
             },
           });
         }

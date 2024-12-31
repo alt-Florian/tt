@@ -104,7 +104,7 @@ export default function PhysicalCustomerFilePage() {
             </div>
             <div
               className="flex gap-2 items-center hover:bg-gray-100 hover:cursor-pointer px-4 py-2 "
-              onClick={handleDeleteCustomer}
+              onClick={() => handleDeleteCustomer(id)}
             >
               <TrashIcon className="size-4" />{" "}
               <span className="text-[13px]">Supprimer la fiche client</span>

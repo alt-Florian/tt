@@ -25,32 +25,32 @@ export interface CorporateCustomerCreateResponse {
 }
 
 export interface CorporateCustomerUpdate {
-  name?: string;
-  email1?: string;
+  name?: string | null;
+  email1?: string | null;
   type?: string;
-  refId?: string;
-  infos?: string;
+  refId?: string | null;
+  infos?: string | null;
   key?: string;
   row_infos?: {
-    phone1?: string;
-    address1?: string;
-    address2?: string;
+    phone1?: string | null;
+    address1?: string | null;
+    address2?: string | null;
     refAddress?: string;
-    city1?: string;
-    zip1?: string;
-    rSocial?: number;
-    registrationDate?: string;
-    closureDate?: string;
-    closingAccounts?: string;
-    capital?: number;
-    nafCode?: string;
-    siren?: number;
+    city1?: string | null;
+    zip1?: string | null;
+    rSocial?: number | null;
+    registrationDate?: string | null;
+    closureDate?: string | null;
+    closingAccounts?: string | null;
+    capital?: number | null;
+    nafCode?: string | null;
+    siren?: number | null;
     siret?: string[];
-    courtService?: string;
-    vat?: string;
+    courtService?: string | null;
+    vat?: string | null;
     shareQty?: number | null;
     isPapperSource?: boolean;
-    updatedPapper?: string;
+    updatedPapper?: string | null;
   };
 }
 

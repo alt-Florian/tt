@@ -30,11 +30,11 @@ class Globals {
 
   civilStats = [
     { value: 0, text: "Célibataire" },
-    { value: 1, text: "Divorcé" },
-    { value: 2, text: "Veuf" },
-    { value: 3, text: "Marié" },
-    { value: 4, text: "Pacsé" },
-    { value: 5, text: "Décédé" },
+    { value: 1, text: "Divorcé(e)" },
+    { value: 2, text: "Veuf(ve)" },
+    { value: 3, text: "Marié(e)" },
+    { value: 4, text: "Pacsé(e)" },
+    { value: 5, text: "Décédé(e)" },
     { value: 90, text: "Autre" },
   ];
 
@@ -148,7 +148,7 @@ class Globals {
       description: "Valeur post-OBO",
     },
   ];
-  marriageSettlement = [
+  contractMarriedRegime = [
     { value: 0, text: "Inconnu" },
     { value: 1, text: "Mariage sous le régime légal" },
     { value: 2, text: "Mariage sous le régime de la séparation de biens" },
@@ -161,6 +161,33 @@ class Globals {
       text: "Mariage sous le régime de la communauté universelle",
     },
     { value: 99, text: "Autre" },
+  ];
+
+  contractPacsRegime = [
+    { value: 0, text: "Inconnu" },
+    {
+      value: 5,
+      text: "Pacte civil de solidarité sous le régime de la séparation",
+    },
+    {
+      value: 6,
+      text: "Pacte civil de solidarité sous le régime de l’indivision",
+    },
+  ];
+
+  months = [
+    { value: 1, text: "Janvier" },
+    { value: 2, text: "Février" },
+    { value: 3, text: "Mars" },
+    { value: 4, text: "Avril" },
+    { value: 5, text: "Mai" },
+    { value: 6, text: "Juin" },
+    { value: 7, text: "Juillet" },
+    { value: 8, text: "Août" },
+    { value: 9, text: "Septembre" },
+    { value: 10, text: "Octobre" },
+    { value: 11, text: "Novembre" },
+    { value: 12, text: "Décembre" },
   ];
 
   priceTypes = [

@@ -1,4 +1,5 @@
 import { useApi } from "@hooks/api/useApi";
+import { DeleteResponse } from "@interfaces/config/DeleteResponse.interface";
 import {
   CorporateContactCreate,
   CorporateContactCreateResponse,
@@ -17,6 +18,7 @@ import {
 import {
   BecomeCustomer,
   BecomeCustomerResponse,
+  BigExpert,
   CorporateCustomerProfileResponse,
   CustomerEnterpriseResponse,
   CustomerForSelectResponse,
@@ -196,6 +198,18 @@ class CustomerApi {
     }
   }
 
+  public async bigExpert(
+    id: string,
+    body: BigExpert
+  ): Promise<BecomeCustomerResponse> {
+    try {
+      const { data } = await api.post(`/crm/customer/bigexpert/${id}`, body);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   public async updatePhysicalCustomer(
     id: string,
     body: PhysicalCustomerUpdate
@@ -220,8 +234,26 @@ class CustomerApi {
     }
   }
 
+  public async deletePhysicalCustomer(id: string): Promise<DeleteResponse> {
+    try {
+      const { data } = await api.delete(`/crm/customer/physical/${id}`);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async deleteCorporateCustomer(id: string): Promise<DeleteResponse> {
+    try {
+      const { data } = await api.delete(`/crm/customer/corporate/${id}`);
+      return data;
+    }
+    catch (error) {
+      throw error;
+    }
+  }
+
   async search(term: string) {
-     try {
+    try {
       const { data } = await api.get(`/crm/customer/search/${term}?customer=true&limit=0`);
       return data;
     } catch (error) {

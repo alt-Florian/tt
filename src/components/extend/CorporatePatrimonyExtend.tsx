@@ -1,13 +1,27 @@
+import PatrimonyCorporateForm from "@components/forms/PatrimonyCorporateForm";
 import { Badge } from "@components/ui/Badge";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { patrimonyService } from "@services/customer/Patrimony.service";
-import { useNavigate } from "react-router-dom";
+import { useModalBoxStore } from "@stores/modalbox.store";
 import { PatrimonyExtendProps } from "./PhysicalPatrimonyExtend";
 
 export default function CorporatePatrimonyExtend({ id }: PatrimonyExtendProps) {
-  const navigate = useNavigate();
+  const { showModalBox, hideModalBox } = useModalBoxStore();
   const { data, isPending, isError } =
     patrimonyService.getCustomerPatrimony(id);
+
+  const openPatrimonyCorporateForm = (patrimonyId?: string) => {
+    showModalBox({
+      content: (
+        <PatrimonyCorporateForm
+          handleClose={hideModalBox}
+          id={id}
+          patrimonyId={patrimonyId}
+        />
+      ),
+      handleCloseModal: hideModalBox,
+    });
+  };
 
   if (isPending) {
     return <p>Chargement en cours</p>;
@@ -37,22 +51,24 @@ export default function CorporatePatrimonyExtend({ id }: PatrimonyExtendProps) {
             key={index}
             className="flex gap-4 lg:gap-10 py-2 px-1 lg:px-4 border-b border-gray-200"
           >
-            <span className="flex-1 lg:mr-4">{patrimony.year}</span>
+            <span className="flex-1 lg:mr-4 font-semibold">
+              {patrimony.year}
+            </span>
             <span className="flex-1">
               {patrimony.equity || "-"}
-              {patrimony.equity && " €"}
+              {patrimony.equity ? " €" : null}
             </span>
             <span className="flex-1">
               {patrimony.ca || "-"}
-              {patrimony.ca && " €"}
+              {patrimony.ca ? " €" : null}
             </span>
             <span className="flex-1">
               {patrimony.netResult || "-"}
-              {patrimony.netResult && " €"}
+              {patrimony.netResult ? " €" : null}
             </span>
             <span className="flex-1">
               {patrimony.netAsset || "-"}
-              {patrimony.netAsset && " €"}
+              {patrimony.netAsset ? " €" : null}
             </span>
             <span className="flex-1">{patrimony.effectif || "-"}</span>
             <span className="flex-1">
@@ -99,7 +115,7 @@ export default function CorporatePatrimonyExtend({ id }: PatrimonyExtendProps) {
             </span>
             <PencilIcon className="lg:hidden size-5 text-indigo-600 hover:text-indigo-800 hover:cursor-pointer" />
             <button
-              onClick={() => navigate("")}
+              onClick={() => openPatrimonyCorporateForm(patrimony._id)}
               className="hidden lg:inline text-indigo-600 hover:text-indigo-800"
             >
               Éditer

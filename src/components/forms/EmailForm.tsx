@@ -68,7 +68,7 @@ export default function EmailForm({
                     {errors.email}
                   </p>
                 ) : null}
-                {isError && error.status === 409 ? (
+                {isError && error.status === 400 ? (
                   <p className="mt-1 text-sm text-red-500">
                     Il existe déja un compte avec cet email
                   </p>

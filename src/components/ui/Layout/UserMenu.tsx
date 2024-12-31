@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useAuthStore } from "@stores/Auth.store";
 import { authService } from "@services/Auth.service";
+import { UserIcon } from "@heroicons/react/24/solid";
 
 export default function UserMenu() {
   const { user } = useAuthStore();
@@ -10,11 +11,10 @@ export default function UserMenu() {
   return (
     <Menu as="div" className="relative">
       <MenuButton className="-m-1.5 flex items-center p-1.5">
-        <img
-          className="size-8 rounded-full bg-gray-50"
-          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-          alt=""
-        />
+    <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+      <UserIcon className="h-4 w-4 text-gray-500" />
+    </div>
+
         <span className="hidden lg:flex lg:items-center">
           <span className="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100">
             {user?.firstname} {user?.lastname}

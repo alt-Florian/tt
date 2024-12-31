@@ -55,6 +55,9 @@ export function RefIdFormViewModel(handleClose: () => void, id: string) {
                     hideDialogBox();
                   },
                 });
+                queryClient.invalidateQueries({
+                  queryKey: [`corporateCustomerProfile${id}`],
+                });
                 handleClose();
               },
               onError: (error: any) => {
@@ -69,10 +72,6 @@ export function RefIdFormViewModel(handleClose: () => void, id: string) {
               },
             }
           );
-          queryClient.invalidateQueries({
-            queryKey: [`corporateCustomerProfile${id}`],
-          });
-          handleClose();
         }
       },
     });

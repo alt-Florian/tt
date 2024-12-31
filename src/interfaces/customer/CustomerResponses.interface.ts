@@ -50,7 +50,7 @@ export type RowInfoPhysicalResponse = {
   unionPlace?: string;
   address1?: string;
   city1?: string;
-  zip1?: number;
+  zip1?: string;
   email2?: string;
   phone2?: string;
   address2?: string;
@@ -90,12 +90,14 @@ export interface PhysicalCustomerProfileResponse {
     details: PhysicalCustomerDetails;
     relations?: Relation[];
     patrimony?: {
+      _id: string;
       payedTax: number | null;
       socialTax: number | null;
       fiscalTax: number | null;
       year: string;
     }[];
     possessions?: {
+      _id: string;
       actif: number;
       passif: number;
     };
@@ -182,6 +184,7 @@ export interface CorporateCustomerProfileResponse {
     details: CorporateCustomerDetails;
     relations?: Relation[];
     patrimony?: {
+      _id: string;
       equity: number | null;
       ca: number | null;
       netResult: number | null;
@@ -192,6 +195,7 @@ export interface CorporateCustomerProfileResponse {
       year: string;
     }[];
     possessions?: {
+      _id: string;
       actif: number;
       passif: number;
     };
@@ -219,4 +223,8 @@ interface CustomerDetails {
 export interface BecomeCustomerResponse {
   statusCode: number;
   datas: CustomerDetails;
+}
+
+export interface BigExpert {
+  bigExpert: boolean;
 }

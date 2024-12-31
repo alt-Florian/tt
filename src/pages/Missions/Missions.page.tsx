@@ -1,11 +1,14 @@
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { EnhancedTable } from "@components/ui/table/EnhancedTable";
+import { Column, EnhancedTable } from "@components/ui/table/EnhancedTable";
 import { useMissionsViewModel } from "./Missions.viewmodel";
 import { useNavigate } from "react-router-dom";
 import { tableHelper } from "@utils/table";
 import { userService } from "@services/User.service";
 import { letterTemplateService } from "@services/config/LetterTemplate.service";
 import PageLoader from "@components/ui/PageLoader";
+import { useColumnPreferencesStore } from "@stores/ColumnPreferences.store";
+import { useState } from "react";
+import { enumScope } from "@enums/Filter.enum";
 
 export default function MissionsPage() {
   const {
@@ -27,6 +30,16 @@ export default function MissionsPage() {
 
   const { lettersTemplate } = letterTemplateService.getCached()
   tableHelper.setLettersTemplate(lettersTemplate)
+
+    const { getColumnPreference, setColumnPreference } = useColumnPreferencesStore();
+  const [currentColumns, setCurrentColumns] = useState<Column[]>(() => 
+    getColumnPreference(enumScope.MISSIONS, columns)
+  );
+
+  const handleColumnChange = (newColumns: Column[]) => {
+    setCurrentColumns(newColumns);
+    setColumnPreference(enumScope.MISSIONS, newColumns);
+  };
   
   if (isLoading) return (<PageLoader isLoading={isLoading} message="Chargement des données..."/>);
   if (error) return <div>Une erreur est survenue</div>;
@@ -47,13 +60,14 @@ export default function MissionsPage() {
 
       <EnhancedTable
         data={data?.datas}
-        columns={columns}
+        columns={currentColumns}
         filters={filters}
         onSearch={handleSearch}
         onFilter={handleFilter}
         skip={skip}
         count={data?.paginate.count || 0}
         take={data?.paginate.take || 0}
+        onColumnChange={handleColumnChange}
         onPaginationChange={onPaginationChange}
         transformer={tableHelper}
         path='/mission'

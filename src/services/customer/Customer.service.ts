@@ -1,4 +1,5 @@
 import { customerApi } from "@api/customer/Customer.api";
+import { DeleteResponse } from "@interfaces/config/DeleteResponse.interface";
 import {
   CorporateContactCreate,
   CorporateContactCreateResponse,
@@ -17,6 +18,7 @@ import {
 import {
   BecomeCustomer,
   BecomeCustomerResponse,
+  BigExpert,
   CorporateCustomerProfileResponse,
   CustomerEnterpriseResponse,
   CustomerForSelectResponse,
@@ -225,6 +227,20 @@ class CustomerService {
     });
   }
 
+  public bigExpert(): UseMutationResult<
+    BecomeCustomerResponse,
+    any,
+    { id: string; body: BigExpert }
+  > {
+    return useMutation<
+      BecomeCustomerResponse,
+      any,
+      { id: string; body: BigExpert }
+    >({
+      mutationFn: ({ id, body }) => customerApi.bigExpert(id, body),
+    });
+  }
+
   public updatePhysicalCustomer(): UseMutationResult<
     PhysicalCustomerUpdateResponse,
     any,
@@ -252,6 +268,26 @@ class CustomerService {
     >({
       mutationFn: ({ id, body }) =>
         customerApi.updateCorporateCustomer(id, body),
+    });
+  }
+
+  public deletePhysicalCustomer(): UseMutationResult<
+    DeleteResponse,
+    any,
+    string
+  > {
+    return useMutation<DeleteResponse, any, string>({
+      mutationFn: (id) => customerApi.deletePhysicalCustomer(id),
+    });
+  }
+
+  public deleteCorporateCustomer(): UseMutationResult<
+    DeleteResponse,
+    any,
+    string
+  > {
+    return useMutation<DeleteResponse, any, string>({
+      mutationFn: (id) => customerApi.deleteCorporateCustomer(id),
     });
   }
 }

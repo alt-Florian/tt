@@ -141,13 +141,13 @@ export default function CorporateCustomerEnterprises() {
                           Globals.rSocials.find(
                             (rsocial) =>
                               rsocial.value ===
-                              shareholder.refId.row_infos.rSocial
+                              shareholder.refId?.row_infos.rSocial
                           )?.text
                         }{" "}
-                        {shareholder.refId.name}
+                        {shareholder.refId?.name}
                       </span>
                       <span className="bg-gray-100 border border-gray-200 rounded-md px-1.5 py-0.5">
-                        {shareholder.refId.customer === true
+                        {shareholder.refId?.customer === true
                           ? "Client"
                           : "Contact"}
                       </span>

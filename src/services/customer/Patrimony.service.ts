@@ -1,7 +1,7 @@
 import { patrimonyApi } from "@api/customer/Patrimony.api";
 import {
+  CustomersPatrimonyResponse,
   Patrimony,
-  PatrimonyResponse,
 } from "@interfaces/customer/Patrimony.interface";
 import {
   UseMutationResult,
@@ -13,8 +13,8 @@ import {
 class PatrimonyService {
   public getCustomerPatrimony(
     customerId: string
-  ): UseQueryResult<PatrimonyResponse, any> {
-    return useQuery<PatrimonyResponse, any>({
+  ): UseQueryResult<CustomersPatrimonyResponse, any> {
+    return useQuery<CustomersPatrimonyResponse, any>({
       queryKey: [`patrimony${customerId}`],
       queryFn: () => patrimonyApi.getCustomerPatrimony(customerId),
       staleTime: 0,
@@ -22,12 +22,12 @@ class PatrimonyService {
   }
 
   public createPatrimony(): UseMutationResult<
-    PatrimonyResponse,
+    CustomersPatrimonyResponse,
     any,
     { customerId: string; patrimony: Patrimony }
   > {
     return useMutation<
-      PatrimonyResponse,
+      CustomersPatrimonyResponse,
       any,
       { customerId: string; patrimony: Patrimony }
     >({
@@ -37,7 +37,7 @@ class PatrimonyService {
   }
 
   public updatePatrimony(): UseMutationResult<
-    PatrimonyResponse,
+    CustomersPatrimonyResponse,
     any,
     {
       customerId: string;
@@ -46,7 +46,7 @@ class PatrimonyService {
     }
   > {
     return useMutation<
-      PatrimonyResponse,
+      CustomersPatrimonyResponse,
       any,
       {
         customerId: string;
@@ -60,12 +60,12 @@ class PatrimonyService {
   }
 
   public deletePatrimony(): UseMutationResult<
-    PatrimonyResponse,
+    CustomersPatrimonyResponse,
     any,
     { customerId: string; patrimonyId: string }
   > {
     return useMutation<
-      PatrimonyResponse,
+      CustomersPatrimonyResponse,
       any,
       { customerId: string; patrimonyId: string }
     >({

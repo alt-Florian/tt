@@ -24,6 +24,8 @@ export default function PatrimonyPhysicalForm({
     isPending,
     isError,
     isPendingOnMutation,
+    isErrorOnMutation,
+    errorOnMutation,
   } = PatrimonyPhysicalFormViewModel(id, handleClose, patrimonyId);
 
   if (isPending) return <SmallSpinner />;
@@ -73,6 +75,11 @@ export default function PatrimonyPhysicalForm({
             {touched.year && errors.year ? (
               <p id="year-error" className="mt-2 text-sm text-red-600">
                 {errors.year}
+              </p>
+            ) : null}
+            {isErrorOnMutation && errorOnMutation.status === 400 ? (
+              <p className="mt-2 text-sm text-red-600">
+                Cette année est déja enregistrée
               </p>
             ) : null}
           </div>
@@ -210,7 +217,7 @@ export default function PatrimonyPhysicalForm({
             className="text-sm font-semibold text-gray-900 px-3 py-2 border rounded-md border-gray-300 hover:bg-gray-100"
             onClick={openConfirmDeleteModal}
           >
-            Supprimer le RIB
+            Supprimer
           </button>
         ) : null}
       </div>

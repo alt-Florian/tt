@@ -3,9 +3,12 @@ import { BreadcrumbPage } from "@components/ui/Breadcrumbs";
 import { Tab } from "@components/ui/Tabs";
 import { CorporateCustomerProfileResponse } from "@interfaces/customer/CustomerResponses.interface";
 import { customerService } from "@services/customer/Customer.service";
+import { dialogService } from "@services/Dialog.service";
+import { useDialogBoxStore } from "@stores/DialogBox.store";
 import { useModalBoxStore } from "@stores/modalbox.store";
 import Globals from "@utils/Globals";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function CorporateCustomerFileViewModel(id: string) {
   const { hideModalBox, showModalBox } = useModalBoxStore();
@@ -68,8 +71,33 @@ export function CorporateCustomerFileViewModel(id: string) {
     mutateBecomeCustomer({ id, body: {} });
   };
 
+  const navigate = useNavigate();
+  const { showDialogBox, hideDialogBox } = useDialogBoxStore();
+
   //Delete Mutation & function
-  const handleDeleteCustomer = () => console.log("delete");
+  const { mutate: mutateDelete } = customerService.deleteCorporateCustomer();
+  const handleDeleteCustomer = (id: string) => {
+    mutateDelete(id, {
+      onSuccess: () => {
+        showDialogBox({
+          ...dialogService.successMessage(),
+          onClick: () => {
+            hideDialogBox();
+          },
+        });
+        navigate("/");
+      },
+      onError: () => {
+        showDialogBox({
+          ...dialogService.errorMessage(),
+          onClick: () => {
+            hideDialogBox();
+          },
+        });
+        navigate("/");
+      },
+    });
+  };
 
   //Download CSV function
   const handleDownloadCSV = () => {

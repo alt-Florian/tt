@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface EditableTextProps {
   content: string;
   onUpdate: (text: string) => void;
+  isTextArea?: boolean;
   className?: string;
   classNameText?: string;
   classNameInput?: string;
@@ -10,19 +11,25 @@ interface EditableTextProps {
 const EditableText = ({
   content,
   onUpdate,
+  isTextArea,
   className,
   classNameText,
   classNameInput,
 }: EditableTextProps) => {
-  const [text, setText] = useState(content);
+  const [text, setText] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    setText(content);
+  }, [content]);
 
   // Active le mode édition
   const handleTextClick = () => setIsEditing(true);
 
   // Gère la saisie dans l'input
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setText(event.target.value);
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setText(event.target.value);
 
   // Sauvegarde la modification et désactive le mode édition
   const handleSave = () => {
@@ -31,8 +38,10 @@ const EditableText = ({
   };
 
   // Sauvegarde lorsque l'utilisateur appuie sur Entrée
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (event.key === "Enter" && !event.shiftKey) {
       handleSave();
     }
   };
@@ -40,19 +49,33 @@ const EditableText = ({
   return (
     <div className={className}>
       {isEditing ? (
-        <input
-          type="text"
-          value={text}
-          onChange={handleChange}
-          onBlur={handleSave} // Sauvegarde lors du blur
-          onKeyDown={handleKeyDown} // Sauvegarde avec Entrée
-          autoFocus
-          className={`p-0 ${classNameInput}`}
-        />
+        isTextArea ? (
+          <textarea
+            value={text}
+            onChange={handleChange}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            autoFocus
+            className={`p-0 w-full min-h-40 ${classNameInput}`}
+          />
+        ) : (
+          <input
+            type="text"
+            value={text}
+            onChange={handleChange}
+            onBlur={handleSave}
+            onKeyDown={handleKeyDown}
+            autoFocus
+            className={`p-0 ${classNameInput}`}
+          />
+        )
       ) : (
-        <span onClick={handleTextClick} className={`p-0 ${classNameText}`}>
+        <p
+          onClick={handleTextClick}
+          className={`p-0 whitespace-pre-wrap ${classNameText}`}
+        >
           {text}
-        </span>
+        </p>
       )}
     </div>
   );

@@ -27,7 +27,7 @@ export class TransformTable {
     }
 
     letterTemplate(value: string) {
-        return this.lettersTemplate.find(letter => letter._id === value).name || 'N/A';
+        return this.lettersTemplate.find(letter => letter._id === value)?.name || 'N/A';
     }
 
     formatDateFr(value: Date): string {

@@ -1,7 +1,7 @@
 import { useApi } from "@hooks/api/useApi";
 import {
+  CustomersPatrimonyResponse,
   Patrimony,
-  PatrimonyResponse,
 } from "@interfaces/customer/Patrimony.interface";
 
 const api = useApi();
@@ -9,7 +9,7 @@ const api = useApi();
 class PatrimonyApi {
   public async getCustomerPatrimony(
     customerId: string
-  ): Promise<PatrimonyResponse> {
+  ): Promise<CustomersPatrimonyResponse> {
     try {
       const { data } = await api.get(`/crm/customer/${customerId}/patrimony`);
       return data;
@@ -21,7 +21,7 @@ class PatrimonyApi {
   public async createPatrimony(
     customerId: string,
     patrimony: Patrimony
-  ): Promise<PatrimonyResponse> {
+  ): Promise<CustomersPatrimonyResponse> {
     try {
       const { data } = await api.post(
         `/crm/customer/${customerId}/patrimony`,
@@ -37,7 +37,7 @@ class PatrimonyApi {
     customerId: string,
     patrimonyId: string,
     patrimony: Partial<Patrimony>
-  ): Promise<PatrimonyResponse> {
+  ): Promise<CustomersPatrimonyResponse> {
     try {
       const { data } = await api.post(
         `/crm/customer/${customerId}/patrimony/${patrimonyId}`,
@@ -52,7 +52,7 @@ class PatrimonyApi {
   public async deletePatrimony(
     customerId: string,
     patrimonyId: string
-  ): Promise<PatrimonyResponse> {
+  ): Promise<CustomersPatrimonyResponse> {
     try {
       const { data } = await api.delete(
         `/crm/customer/${customerId}/patrimony/${patrimonyId}`

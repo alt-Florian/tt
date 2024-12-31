@@ -31,10 +31,13 @@ export function EmailFormViewModel(handleClose: () => void, id: string) {
                 hideDialogBox();
               },
             });
+            queryClient.invalidateQueries({
+              queryKey: [`physicalCustomerProfile${id}`],
+            });
             handleClose();
           },
           onError: (error: any) => {
-            if (error.status !== 409) {
+            if (error.status !== 400) {
               showDialogBox({
                 ...dialogService.errorMessage(),
                 onClick: () => {
@@ -46,10 +49,6 @@ export function EmailFormViewModel(handleClose: () => void, id: string) {
           },
         }
       );
-      queryClient.invalidateQueries({
-        queryKey: [`physicalCustomerProfile${id}`],
-      });
-      handleClose();
     },
   });
 

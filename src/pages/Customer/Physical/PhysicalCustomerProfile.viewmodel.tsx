@@ -2,7 +2,10 @@ import PhysicalPatrimonyExtend from "@components/extend/PhysicalPatrimonyExtend"
 import PossessionsExtend from "@components/extend/PossessionsExtend";
 import AddPossessionForm from "@components/forms/AddPossessionForm";
 import PatrimonyPhysicalForm from "@components/forms/PatrimonyPhysicalForm";
-import { PhysicalCustomerProfileResponse } from "@interfaces/customer/CustomerResponses.interface";
+import {
+  BigExpert,
+  PhysicalCustomerProfileResponse,
+} from "@interfaces/customer/CustomerResponses.interface";
 import { PhysicalCustomerUpdate } from "@interfaces/customer/PhysicalCustomer.interface";
 import { customerService } from "@services/customer/Customer.service";
 import { dialogService } from "@services/Dialog.service";
@@ -30,17 +33,19 @@ export function PhysicalCustomerProfileViewModel(id: string) {
 
   function transformData(data: PhysicalCustomerProfileResponse) {
     const { details, relations, patrimony, possessions } = data.datas;
-    const { name, row_infos, customer, email1, infos, refType, bigExpert } =
+    const { name, row_infos, email1, infos, refType, bigExpert, customer } =
       details;
     const text = generateText(name, row_infos);
-    let age;
+    let age = 0;
+    const getAge = (date: string | Date): number =>
+      new Date().getFullYear() - new Date(date).getFullYear();
     if (row_infos.birthday) {
-      age =
-        new Date().getFullYear() - new Date(row_infos.birthday).getFullYear();
+      age = getAge(row_infos.birthday);
     }
     return {
       text,
       age,
+      getAge,
       relations,
       patrimony,
       possessions,
@@ -55,23 +60,26 @@ export function PhysicalCustomerProfileViewModel(id: string) {
   }
 
   const { showDialogBox, hideDialogBox } = useDialogBoxStore();
-  const { mutate } = customerService.updatePhysicalCustomer();
+  const {
+    mutate,
+    isError: isErrorUpdate,
+    error: errorUpdate,
+    reset: resetUpdateErrors,
+  } = customerService.updatePhysicalCustomer();
   const handleUpdate = (value: PhysicalCustomerUpdate) => {
     mutate(
       { id, body: value },
       {
         onSuccess: () => {
-          showDialogBox({
-            ...dialogService.successMessage(),
-            onClick: () => {
-              hideDialogBox();
-            },
-          });
           queryClient.invalidateQueries({
             queryKey: [`physicalCustomerProfile${id}`],
           });
         },
         onError: () => {
+          queryClient.invalidateQueries({
+            queryKey: [`physicalCustomerProfile${id}`],
+          });
+
           showDialogBox({
             ...dialogService.errorMessage(),
             onClick: () => {
@@ -144,6 +152,28 @@ export function PhysicalCustomerProfileViewModel(id: string) {
     });
   };
 
+  const { mutate: mutateBigExpert } = customerService.bigExpert();
+  const handleBigExpert = (value: BigExpert) => {
+    mutateBigExpert(
+      { id, body: value },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [`physicalCustomerProfile${id}`],
+          });
+        },
+        onError: () => {
+          showDialogBox({
+            ...dialogService.errorMessage(),
+            onClick: () => {
+              hideDialogBox();
+            },
+          });
+        },
+      }
+    );
+  };
+
   return {
     dataProfile,
     isPendingProfile,
@@ -162,6 +192,10 @@ export function PhysicalCustomerProfileViewModel(id: string) {
     setTogglePatrimony,
     navigate,
     handleUpdate,
+    isErrorUpdate,
+    errorUpdate,
+    resetUpdateErrors,
     openPatrimonyPhysicalForm,
+    handleBigExpert,
   };
 }

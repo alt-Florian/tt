@@ -1,7 +1,6 @@
 import { AuthState } from "@interfaces/auth/AuthStore.interface";
 import { create } from "zustand";
 
-
 export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   refreshToken: null,

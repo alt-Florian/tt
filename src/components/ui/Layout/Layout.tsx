@@ -29,6 +29,7 @@ import { useState } from "react";
 
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import UserMenu from "./UserMenu";
+import SearchAutocomplete from "../globalSearch/SearchAutocomplete";
 //import ThemeToggle from '@components/ui/ThemeToggle';
 
 const teams = [
@@ -405,22 +406,7 @@ export default function Layout() {
               />
 
               <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                <form action="#" method="GET" className="relative flex flex-1">
-                  <label htmlFor="search-field" className="sr-only">
-                    Search
-                  </label>
-                  <MagnifyingGlassIcon
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-                  />
-                  <input
-                    id="search-field"
-                    name="search"
-                    type="search"
-                    placeholder="Rechercher..."
-                    className="block size-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  />
-                </form>
+              <SearchAutocomplete />
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
                   
                   <button

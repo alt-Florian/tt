@@ -19,7 +19,7 @@ class AuthService {
       mutationFn: (user: UserInterface) => authApi.signUp(user),
     });
   }
-  
+
   public signOut() {
     const { clearAuthState } = useAuthStore();
     const navigate = useNavigate();

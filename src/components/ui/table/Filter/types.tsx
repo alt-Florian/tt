@@ -41,6 +41,7 @@ export interface SavedFilterType {
 export interface FilterState {
   conditions: FilterCondition[];
   logic: FilterLogic;
+  sort?: SortOption; 
 }
 
 export interface SelectOption {
@@ -66,4 +67,9 @@ export interface FilterFieldConfig {
   options?: SelectOption[] | DynamicSelectConfig ;
   multiSelect?: boolean;
   singleUse?: boolean; 
+}
+
+export interface SortOption {
+  field: string;
+  direction: 'asc' | 'desc';
 }

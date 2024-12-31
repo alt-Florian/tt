@@ -6,22 +6,27 @@ export interface Patrimony {
   netResult?: number;
   netAsset?: number;
   effectif?: number;
-  VAT?: boolean;
-  corporateTax?: boolean;
+  VAT?: boolean | null;
+  corporateTax?: boolean | null;
   //physical
   fiscalTax?: number;
   payedTax?: number;
   socialTax?: number;
 }
 
-export interface PatrimonyDatas extends Patrimony {
+export interface PatrimonyResponse extends Patrimony {
   _id: string;
-  datas: Patrimony[];
+  createdAt: string;
+  updatedAt: string;
+}
+export interface CustomersPatrimonyDatas extends Patrimony {
+  _id: string;
+  datas: PatrimonyResponse[];
   refCustomer: string;
   createdAt: string;
   updatedAt: string;
 }
-export interface PatrimonyResponse {
+export interface CustomersPatrimonyResponse {
   statusCode: number;
-  datas: PatrimonyDatas;
+  datas: CustomersPatrimonyDatas;
 }

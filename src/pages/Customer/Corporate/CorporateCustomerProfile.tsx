@@ -1,15 +1,18 @@
+import DatePickerButton from "@components/ui/DatePickerButton";
 import EditableDate from "@components/ui/EditableDate";
 import EditableText from "@components/ui/EditableText";
 import EditableTextWithSelect from "@components/ui/EditableTextWithSelect";
 import { SmallSpinner } from "@components/ui/Spinner";
+import TextButton from "@components/ui/TextButton";
 import Toggle from "@components/ui/Toggle";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import {
   ArrowsPointingOutIcon,
   EllipsisVerticalIcon,
   EnvelopeIcon,
-  MinusCircleIcon,
   PhoneIcon,
   PlusCircleIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { CorporateCustomerProfileViewModel } from "@pages/Customer/Corporate/CorporateCustomerProfile.viewmodel";
 import Globals from "@utils/Globals";
@@ -37,7 +40,14 @@ export default function CorporateCustomerProfile() {
     setToggleRelations,
     togglePatrimony,
     setTogglePatrimony,
+    isContactDetailsLeft,
+    setIsContactDetailsLeft,
     handleUpdate,
+    isErrorUpdate,
+    errorUpdate,
+    resetUpdateErrors,
+    handleBigExpert,
+    openPatrimonyCorporateForm,
   } = CorporateCustomerProfileViewModel(id);
 
   if (isPendingProfile) return <SmallSpinner />;
@@ -55,7 +65,6 @@ export default function CorporateCustomerProfile() {
     row_infos,
     bigExpert,
   } = transformData(dataProfile);
-  console.log("🚀 ~ CorporateCustomerProfile ~ bigExpert:", bigExpert);
 
   return (
     <div className="flex flex-col lg:flex-row lg:gap-4 mt-4">
@@ -149,6 +158,7 @@ export default function CorporateCustomerProfile() {
               </button>
               <button
                 type="button"
+                onClick={() => openPatrimonyCorporateForm()}
                 className="flex items-center text-sm font-semibold text-gray-900 px-3 py-2 border rounded-md border-gray-300 bg-white hover:bg-gray-50 shadow-sm"
               >
                 <PlusCircleIcon className="size-4 mr-2" />
@@ -169,22 +179,25 @@ export default function CorporateCustomerProfile() {
                 key={index}
                 className="flex gap-2 py-2 px-4 border-b border-gray-200"
               >
-                <span className="flex-1">{patrimony.year}</span>
+                <span className="flex-1 font-semibold">{patrimony.year}</span>
                 <span className="flex-1">
                   {patrimony.equity || "-"}
-                  {patrimony.equity && " €"}
+                  {patrimony.equity ? " €" : null}
                 </span>
                 <span className="flex-1">
                   {patrimony.ca || "-"}
-                  {patrimony.ca && " €"}
+                  {patrimony.ca ? " €" : null}
                 </span>
                 <span className="flex-1">
                   {patrimony.netResult || "-"}
-                  {patrimony.netResult && " €"}
+                  {patrimony.netResult ? " €" : null}
                 </span>
-                <a href="" className="text-indigo-600 hover:text-indigo-800">
+                <button
+                  onClick={() => openPatrimonyCorporateForm(patrimony._id)}
+                  className="text-indigo-600 hover:text-indigo-800"
+                >
                   Éditer
-                </a>
+                </button>
               </div>
             ))}
           </div>
@@ -225,7 +238,7 @@ export default function CorporateCustomerProfile() {
             <div className="flex-1 flex flex-col border border-gray-200 rounded-md p-4 gap-2">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2 py-2">
-                  <MinusCircleIcon className="size-5" />
+                  <XCircleIcon className="size-5" />
                   <span>Passif</span>
                 </div>
                 <div>
@@ -252,192 +265,553 @@ export default function CorporateCustomerProfile() {
         ></div>
         <div className="flex justify-between items-center bg-gray-100 border-b border-gray-200 p-4">
           <h2 className="font-semibold">Coordonnées</h2>
+          <div className="flex gap-2">
+            <ChevronLeftIcon
+              className={`size-5 cursor-pointer flex-shrink-0 ${
+                isContactDetailsLeft && "text-gray-500 cursor-normal"
+              }`}
+              onClick={() => {
+                resetUpdateErrors();
+                setIsContactDetailsLeft(true);
+              }}
+            />
+            <ChevronRightIcon
+              className={`size-5 text-gray-500 flex-shrink-0
+                ${isContactDetailsLeft && "cursor-pointer text-gray-900"}`}
+              onClick={() => {
+                resetUpdateErrors();
+                setIsContactDetailsLeft(false);
+              }}
+            />
+          </div>
         </div>
-        <div className="p-4 text-sm/tight">
-          <div className="flex flex-col gap-2 pb-6 border-b border-gray-200">
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Type</p>
-              <p className="flex-1">{customer ? "Client" : "Contact"}</p>
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Source</p>
-              <p className="flex-1">
-                {row_infos.isPapperSource
-                  ? `Pappers (${dayjs(row_infos.updatedPapper).format(
-                      "DD MMMM YYYY"
-                    )})`
-                  : "Interne"}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Raison sociale</p>
-              <EditableTextWithSelect
-                selected={
-                  Globals.rSocials.find(
-                    (rsocial) => rsocial.value === row_infos.rSocial
-                  )?.text
-                }
-                options={Globals.rSocials}
-                onUpdate={() => console.log("update")}
-                className="flex-1"
-                classNameSelect="min-w-20 p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Nom</p>
-              <EditableText
-                content={name.toUpperCase() || "-"}
-                onUpdate={(text: string) => handleUpdate({ name: text })}
-                className="flex-1"
-                classNameInput="w-full p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Téléphone</p>
-              <EditableText
-                content={row_infos.phone1 || "-"}
-                onUpdate={(text: string) =>
-                  handleUpdate({ row_infos: { phone1: text } })
-                }
-                className="flex-1"
-                classNameInput="w-auto p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Date d'immatriculation</p>
-              <EditableDate
-                date={
-                  row_infos.registrationDate
-                    ? new Date(row_infos.registrationDate)
-                    : new Date()
-                }
-                onUpdate={(date: Date | null) =>
-                  handleUpdate({
-                    row_infos: {
-                      registrationDate: date?.toISOString() || undefined,
-                    },
-                  })
-                }
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">E-mail</p>
-              <EditableText
-                content={email1 || "-"}
-                onUpdate={(text: string) => handleUpdate({ email1: text })}
-                className="flex-1"
-                classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">SIREN</p>
-              <EditableText
-                content={row_infos.siren || "-"}
-                onUpdate={(text: string) =>
-                  handleUpdate({ row_infos: { siren: Number(text) } })
-                }
-                className="flex-1"
-                classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Siège social</p>
-              {row_infos.address1 && row_infos.city1 && row_infos.zip1 ? (
-                <div className="flex-1">
+        {isContactDetailsLeft ? (
+          <div className="p-4 text-sm/tight">
+            <div className="flex flex-col gap-2 pb-6 border-b border-gray-200">
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Type</p>
+                <p className="flex-1">{customer ? "Client" : "Contact"}</p>
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Source</p>
+                <p className="flex-1">
+                  {row_infos.isPapperSource
+                    ? `Pappers (${dayjs(row_infos.updatedPapper).format(
+                        "DD MMMM YYYY"
+                      )})`
+                    : "Interne"}
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Raison sociale</p>
+                <EditableTextWithSelect
+                  selected={
+                    Globals.rSocials.find(
+                      (rsocial) => rsocial.value === row_infos.rSocial
+                    )?.text
+                  }
+                  options={Globals.rSocials}
+                  onUpdate={(value: string | number) =>
+                    handleUpdate({
+                      row_infos: { rSocial: Number(value) },
+                    })
+                  }
+                  className="flex-1"
+                  classNameSelect="min-w-20 p-0 bg-gray-100 leading-none text-sm"
+                />
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Nom</p>
+                {name ? (
                   <EditableText
-                    content={row_infos.address1 || "-"}
-                    onUpdate={(text: string) =>
-                      handleUpdate({ row_infos: { address1: text } })
-                    }
-                    classNameInput="p-0 w-full bg-gray-100 leading-none text-sm"
+                    content={name}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ name: text });
+                      } else {
+                        handleUpdate({ name: null });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
                   />
-                  <div className="flex">
-                    <EditableText
-                      content={row_infos.city1.toUpperCase() || "-"}
-                      onUpdate={(text: string) =>
-                        handleUpdate({ row_infos: { city1: text } })
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ name: text });
+                      } else {
+                        handleUpdate({ name: null });
                       }
-                      classNameInput="p-0 bg-gray-100 leading-none text-sm"
-                    />
-                    <span className="pl-1">{`(`}</span>
-                    <EditableText
-                      content={row_infos.zip1.toString() || "-"}
-                      onUpdate={(text: string) =>
-                        handleUpdate({ row_infos: { zip1: text } })
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Téléphone</p>
+                {row_infos.phone1 ? (
+                  <EditableText
+                    content={row_infos.phone1}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { phone1: text } });
+                      } else {
+                        handleUpdate({ row_infos: { phone1: null } });
                       }
-                      classNameInput=" p-0 bg-gray-100 leading-none text-sm"
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { phone1: text } });
+                      } else {
+                        handleUpdate({ row_infos: { phone1: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Date d'immatriculation</p>
+                {row_infos.registrationDate ? (
+                  <div className="flex gap-2">
+                    <EditableDate
+                      date={new Date(row_infos.registrationDate)}
+                      onUpdate={(date: Date | null) =>
+                        handleUpdate({
+                          row_infos: {
+                            registrationDate: date?.toISOString() || undefined,
+                          },
+                        })
+                      }
                     />
-                    <span>{`)`}</span>
+                    <XCircleIcon
+                      className="size-4 cursor-pointer mt-[1px]"
+                      onClick={() =>
+                        handleUpdate({
+                          row_infos: {
+                            registrationDate: null,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+                ) : (
+                  <DatePickerButton
+                    onUpdate={(date: Date | null) =>
+                      handleUpdate({
+                        row_infos: {
+                          registrationDate: date?.toISOString() || null,
+                        },
+                      })
+                    }
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">E-mail</p>
+                {email1 ? (
+                  <EditableText
+                    content={email1}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ email1: text });
+                      } else {
+                        handleUpdate({ email1: null });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ email1: text });
+                      } else {
+                        handleUpdate({ email1: null });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">SIREN</p>
+                {row_infos.siren ? (
+                  <EditableText
+                    content={row_infos.siren}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { siren: Number(text) } });
+                      } else {
+                        handleUpdate({ row_infos: { siren: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { siren: Number(text) } });
+                      } else {
+                        handleUpdate({ row_infos: { siren: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              {isErrorUpdate && errorUpdate.status === 403 ? (
+                <p className="text-xs text-red-500">
+                  Ce SIREN est déja utilisé
+                </p>
+              ) : null}
+              <p className=" text-gray-500">Siège social :</p>
+              <div className="flex gap-4">
+                <div className="w-40 text-gray-500 text-xs flex flex-col gap-1">
+                  <p className="italic"> - Numéro et rue</p>
+                  <p className="italic"> - Code postal</p>
+                  <p className="italic"> - Ville</p>
+                </div>
+                <div className="flex-1">
+                  <div className="flex flex-col">
+                    {row_infos.address1 ? (
+                      <EditableText
+                        content={row_infos.address1}
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { address1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { address1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    ) : (
+                      <TextButton
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { address1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { address1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    )}
+                    {row_infos.zip1 ? (
+                      <EditableText
+                        content={row_infos.zip1}
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { zip1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { zip1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    ) : (
+                      <TextButton
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { zip1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { zip1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    )}
+                    {row_infos.city1 ? (
+                      <EditableText
+                        content={row_infos.city1}
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { city1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { city1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    ) : (
+                      <TextButton
+                        onUpdate={(text: string) => {
+                          if (text !== "") {
+                            handleUpdate({ row_infos: { city1: text } });
+                          } else {
+                            handleUpdate({ row_infos: { city1: null } });
+                          }
+                        }}
+                        className="flex-1"
+                        classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                      />
+                    )}
                   </div>
                 </div>
-              ) : (
-                "-"
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 pt-6 pb-4">
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500 ">Greffe du tribunal</p>
-              <EditableText
-                content={row_infos.courtService || "-"}
-                onUpdate={(text: string) =>
-                  handleUpdate({ row_infos: { courtService: text } })
-                }
-                className="flex-1"
-                classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">TVA</p>
-              <EditableText
-                content={row_infos.vat || "-"}
-                onUpdate={(text: string) =>
-                  handleUpdate({ row_infos: { vat: text } })
-                }
-                className="flex-1"
-                classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Capital</p>
-              <div className="flex-1">
-                <EditableText
-                  content={row_infos.capital?.toString() || "-"}
-                  onUpdate={(text: string) =>
-                    handleUpdate({ row_infos: { capital: Number(text) } })
-                  }
-                  className="inline"
-                  classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-                />
-                <span>{row_infos.capital && " €"}</span>
               </div>
             </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">Nombre de titres au capital</p>
-              <EditableText
-                content={row_infos.shareQty?.toString() || "-"}
-                onUpdate={(text: string) =>
-                  handleUpdate({ row_infos: { shareQty: Number(text) } })
-                }
-                className="flex-1"
-                classNameInput=" p-0 bg-gray-100 leading-none text-sm"
-              />
-            </div>
-            <div className="flex gap-1">
-              <p className="w-40 text-gray-500">BigExpert</p>
-              <EditableTextWithSelect
-                selected={bigExpert ? "Oui" : "Non"}
-                options={[
-                  { value: 1, text: "Oui" },
-                  { value: 0, text: "Non" },
-                ]}
-                onUpdate={() => console.log("update")}
-                className="flex-1"
-                classNameSelect="min-w-20 p-0 bg-gray-100 leading-none text-sm"
-              />
+            <div className="flex flex-col gap-2 pt-6 pb-4">
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500 ">Greffe du tribunal</p>
+                {row_infos.courtService ? (
+                  <EditableText
+                    content={row_infos.courtService}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { courtService: text } });
+                      } else {
+                        handleUpdate({ row_infos: { courtService: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { courtService: text } });
+                      } else {
+                        handleUpdate({ row_infos: { courtService: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">TVA</p>
+                {row_infos.vat ? (
+                  <EditableText
+                    content={row_infos.vat}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { vat: text } });
+                      } else {
+                        handleUpdate({ row_infos: { vat: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { vat: text } });
+                      } else {
+                        handleUpdate({ row_infos: { vat: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Capital</p>
+                <div className="flex-1 flex gap-2">
+                  {row_infos.capital ? (
+                    <EditableText
+                      content={row_infos.capital.toString()}
+                      onUpdate={(text: string) => {
+                        if (text !== "") {
+                          handleUpdate({
+                            row_infos: { capital: Number(text) },
+                          });
+                        } else {
+                          handleUpdate({ row_infos: { capital: null } });
+                        }
+                      }}
+                      className="inline"
+                      classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                    />
+                  ) : (
+                    <TextButton
+                      onUpdate={(text: string) => {
+                        if (text !== "") {
+                          handleUpdate({
+                            row_infos: { capital: Number(text) },
+                          });
+                        } else {
+                          handleUpdate({ row_infos: { capital: null } });
+                        }
+                      }}
+                      classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                    />
+                  )}
+                  <span>{row_infos.capital && " €"}</span>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">
+                  Nombre de titres au capital
+                </p>
+                {row_infos.shareQty ? (
+                  <EditableText
+                    content={row_infos.shareQty.toString()}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { shareQty: Number(text) } });
+                      } else {
+                        handleUpdate({ row_infos: { shareQty: null } });
+                      }
+                    }}
+                    className="inline"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { shareQty: Number(text) } });
+                      } else {
+                        handleUpdate({ row_infos: { shareQty: null } });
+                      }
+                    }}
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">BigExpert</p>
+                <EditableTextWithSelect
+                  selected={bigExpert ? "Oui" : "Non"}
+                  options={[
+                    { value: 0, text: "Non" },
+                    { value: 1, text: "Oui" },
+                  ]}
+                  onUpdate={(value) => {
+                    if (Number(value) === 0) {
+                      handleBigExpert({ bigExpert: false });
+                    }
+                    if (Number(value) === 1) {
+                      handleBigExpert({ bigExpert: true });
+                    }
+                  }}
+                  className="flex-1"
+                  classNameSelect="min-w-20 p-0 bg-gray-100 leading-none text-sm"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="p-4 text-sm/tight">
+            <div className="flex flex-col gap-2 pb-6 border-b border-gray-200">
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Code NAF</p>
+                {row_infos.nafCode ? (
+                  <EditableText
+                    content={row_infos.nafCode}
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { nafCode: text } });
+                      } else {
+                        handleUpdate({ row_infos: { nafCode: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                ) : (
+                  <TextButton
+                    onUpdate={(text: string) => {
+                      if (text !== "") {
+                        handleUpdate({ row_infos: { nafCode: text } });
+                      } else {
+                        handleUpdate({ row_infos: { nafCode: null } });
+                      }
+                    }}
+                    className="flex-1"
+                    classNameInput="p-0 bg-gray-100 leading-none text-sm"
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">Date de dépôt de bilan</p>
+                {row_infos.closureDate ? (
+                  <div className="flex gap-2">
+                    <EditableDate
+                      date={new Date(row_infos.closureDate)}
+                      onUpdate={(date: Date | null) =>
+                        handleUpdate({
+                          row_infos: {
+                            closureDate: date?.toISOString() || undefined,
+                          },
+                        })
+                      }
+                    />
+                    <XCircleIcon
+                      className="size-4 cursor-pointer mt-[1px]"
+                      onClick={() =>
+                        handleUpdate({
+                          row_infos: {
+                            closureDate: null,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+                ) : (
+                  <DatePickerButton
+                    onUpdate={(date: Date | null) =>
+                      handleUpdate({
+                        row_infos: {
+                          closureDate: date?.toISOString() || null,
+                        },
+                      })
+                    }
+                  />
+                )}
+              </div>
+              <div className="flex gap-4">
+                <p className="w-40 text-gray-500">
+                  Période de clôture comptable
+                </p>
+
+                <EditableTextWithSelect
+                  selected={
+                    Globals.months.find(
+                      (month) => month.text === row_infos.closingAccounts
+                    )?.text
+                  }
+                  options={Globals.months}
+                  onUpdate={(value) =>
+                    handleUpdate({
+                      row_infos: {
+                        closingAccounts:
+                          Globals.months.find((month) => month.value === value)
+                            ?.text || null,
+                      },
+                    })
+                  }
+                  className="flex-1"
+                  classNameSelect="min-w-20 p-0 bg-gray-100 leading-none text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </aside>
     </div>
   );

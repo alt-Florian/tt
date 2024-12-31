@@ -42,6 +42,23 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         }
     },
     {
+        id: 'usersWorkingOn',
+        label: 'Utilisateur(s) affecté(s)',
+        type: 'select',
+        multiSelect: true,
+        options: {
+            endpoint: 'users',
+            valueKey: 'id',
+            labelKey: 'name',
+            transformResponse: (data) => {
+                return data.map((user: any) => ({
+                    value: user.id,
+                    label: `${user.firstname} ${user.lastname}`
+                }));
+            }
+        }
+    },
+    {
         id: 'template',
         label: 'Template',
         type: 'select',
@@ -57,16 +74,6 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
                 }));
             }
         }
-    },
-    {
-        id: 'status',
-        label: 'Statut',
-        type: 'select',
-        options: [
-            { value: 'accepted', label: 'Accepté' },
-            { value: 'pending', label: 'En attente' },
-            { value: 'rejected', label: 'Refusé' }
-        ]
     },
     {
         id: 'urgent',
@@ -101,8 +108,30 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         }
     },
     {
+        id: 'refId',
+        label: 'Référent client',
+        type: 'select',
+        multiSelect: true,
+        options: {
+            endpoint: 'customerSearch',
+            searchable: true,
+            minChars: 3,
+            transformResponse: (data) => {
+                return data.map((customer: any) => ({
+                    value: customer._id,
+                    label: `${customer.name} ${(customer?.row_infos?.firstname || '')}`
+                }));
+            }
+        }
+    },
+    {
         id: 'm_progress',
         label: 'Progression',
+        type: 'number'
+    },
+    {
+        id: 'blocks.bProgressRange',
+        label: 'Block progression',
         type: 'number'
     },
 ];

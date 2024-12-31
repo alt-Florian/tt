@@ -1,8 +1,10 @@
+import "@components/ui/DatePicker.css";
+import { fr } from "date-fns/locale/fr";
 import dayjs from "dayjs";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./DatePicker.css";
+registerLocale("fr", fr);
 
 interface EditableDateProps {
   date: Date;
@@ -27,6 +29,7 @@ const EditableDate = ({
       {isEditing ? (
         <DatePicker
           open
+          locale="fr"
           selected={dateSelected}
           onChange={(date) => {
             setDateSelected(date);
@@ -35,6 +38,11 @@ const EditableDate = ({
           }}
           onClickOutside={() => setIsEditing(false)}
           dateFormat="dd/MM/yyyy"
+          showYearDropdown
+          scrollableYearDropdown
+          showMonthDropdown
+          scrollableMonthYearDropdown
+          maxDate={new Date()}
         />
       ) : (
         <span onClick={handleDateClick} className={`p-0 ${classNameDate}`}>
