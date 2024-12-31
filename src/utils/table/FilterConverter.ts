@@ -79,9 +79,10 @@ export class FilterConverter {
     public convert(filters: FilterDefinition[]): SavedFilterType[] {
         return filters.map(filter => ({
             id: filter._id,
-            name: `Filtre ${filter._id.slice(-4)}`,
+            name: filter.name,
             conditions: this.convertFilterSet(filter.filterSet),
-            logic: this.convertConjonction(filter.conjonction)
+            logic: this.convertConjonction(filter.conjonction),
+            scope: filter.scope
         }));
     }
 }

@@ -1,3 +1,4 @@
+import { enumScope } from "@enums/Filter.enum";
 
 
 
@@ -36,6 +37,7 @@ export interface SavedFilterType {
   name: string;
   conditions: FilterCondition[];
   logic: FilterLogic;
+  scope: enumScope;
 }
 
 export interface FilterState {

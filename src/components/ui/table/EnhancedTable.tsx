@@ -5,6 +5,7 @@ import { ColumnManager } from './ColumnManager/ColumnManager';
 import { FilterManager } from './Filter/FilterManager';
 import { FilterFieldConfig, FilterState } from './Filter/types';
 import { tableHelper } from '@utils/table';
+import { enumScope } from '@enums/Filter.enum';
 
 
 
@@ -27,6 +28,7 @@ export interface TableProps {
   count: number;
   take: number;
   path: string;
+  scope: enumScope
 }
 
 export function EnhancedTable({ 
@@ -41,7 +43,8 @@ export function EnhancedTable({
   take,
   onPaginationChange,
   transformer,
-  path
+  path,
+  scope
 }: TableProps) {
   
 
@@ -64,9 +67,11 @@ export function EnhancedTable({
             columns={columns}
             filters={filters}
             onClose={() => setIsFilterOpen(false)}
+            scope={scope}
             onApply={(filter) => {
             onFilter(filter);
-            setIsFilterOpen(false);
+              setIsFilterOpen(false);
+              
           }}
         />
 

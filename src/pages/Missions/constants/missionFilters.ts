@@ -59,7 +59,7 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         }
     },
     {
-        id: 'template',
+        id: 'letterTemplate',
         label: 'Template',
         type: 'select',
         multiSelect: false,
@@ -130,8 +130,13 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         type: 'number'
     },
     {
-        id: 'blocks.bProgressRange',
-        label: 'Block progression',
+        id: 'bProgressRange',
+        label: 'Block progression rang',
         type: 'number'
+    },
+    {
+        id: 'bProgress',
+        label: 'Block progression',
+        type: 'boolean'
     },
 ];

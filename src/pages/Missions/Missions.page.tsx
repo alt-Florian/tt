@@ -25,11 +25,13 @@ export default function MissionsPage() {
   const navigate = useNavigate()
   const onPaginationChange = (newSkip: number) => navigate(`/missions?skip=${newSkip}`);
 
-  const { users } = userService.getCached();
-  tableHelper.setUsers(users)
+  const { users, isLoading: isLoadingUsers } = userService.getCached();
+  const { lettersTemplate, isLoading: isLoadingTemplates } = letterTemplateService.getCached();
 
-  const { lettersTemplate } = letterTemplateService.getCached()
-  tableHelper.setLettersTemplate(lettersTemplate)
+   if (users && lettersTemplate) {
+    tableHelper.setUsers(users);
+    tableHelper.setLettersTemplate(lettersTemplate);
+  }
 
     const { getColumnPreference, setColumnPreference } = useColumnPreferencesStore();
   const [currentColumns, setCurrentColumns] = useState<Column[]>(() => 
@@ -41,7 +43,7 @@ export default function MissionsPage() {
     setColumnPreference(enumScope.MISSIONS, newColumns);
   };
   
-  if (isLoading) return (<PageLoader isLoading={isLoading} message="Chargement des données..."/>);
+  if (isLoading || isLoadingUsers || isLoadingTemplates)  return (<PageLoader isLoading={isLoading} message="Chargement des données..."/>);
   if (error) return <div>Une erreur est survenue</div>;
 
   return (
@@ -71,6 +73,7 @@ export default function MissionsPage() {
         onPaginationChange={onPaginationChange}
         transformer={tableHelper}
         path='/mission'
+        scope={enumScope.MISSIONS}
       />
       </div>
 

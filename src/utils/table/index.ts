@@ -10,7 +10,7 @@ class TableHelper extends TransformTable {
 
 
     format<T>(id: string, value: T) {
- 
+
         switch (id) {
             case 'refLawyer': return this.refLawyer(value as number);
             case 'collabList': return this.collabList(value as number[]);

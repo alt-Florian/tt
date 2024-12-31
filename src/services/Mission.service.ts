@@ -12,14 +12,14 @@ class MissionService {
         });
     }
 
-        get(skip: number) {
-            return useQuery<MissionsDataInterface, Error>({
-                queryKey: [`getMission-${skip}`, skip],
-                queryFn: () => missionApi.fetch(skip, []),
-                staleTime: 0,
-            });
-    
-        }
+    get(skip: number, sort: string = '') {
+        return useQuery<MissionsDataInterface, Error>({
+            queryKey: [`getMission-${skip}`, skip],
+            queryFn: () => missionApi.fetch(skip, ['name', 'customer', 'refLawyer', 'm_progress', 'letterTemplate', 'collabList', 'startingDate', 'dueDate', 'billing', 'usersWorkingOn', 'bProgressRange'], sort),
+            staleTime: 0,
+        });
+
+    }
 }
 
 export const missionService = new MissionService();

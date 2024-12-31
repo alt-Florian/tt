@@ -53,7 +53,7 @@ class UserService {
 
     const { data, isLoading, error } = useQuery<UsersListResponse, any>({
       queryKey: ['usersCached'],
-      queryFn: () => userApi.fetchAllUsers(0, []),
+      queryFn: () => userApi.fetchAllUsers(0, ['id','firstname','lastname','role']),
       staleTime: STALE_TIME,
       refetchInterval: STALE_TIME
     });

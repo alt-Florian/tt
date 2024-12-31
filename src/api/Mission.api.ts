@@ -10,10 +10,11 @@ class MissionApi {
 
     public async fetch(
         skip: number,
-        display: string[]
+        display: string[],
+        sort: string
     ): Promise<MissionsDataInterface> {
         try {
-            const { data } = await api.post(`/search?skip=${skip}&sort=id`, {
+            const { data } = await api.post(`/search?skip=${skip}&sort=${sort == '' ? '-createdAt':sort}`, {
                 scope: 2,
                 filterSet: [],
                 query: [],

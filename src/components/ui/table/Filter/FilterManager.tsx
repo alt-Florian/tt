@@ -1,13 +1,14 @@
 import { useFilterStore } from "@stores/FilterStore";
 import { FilterFieldConfig, FilterState } from "./types";
 import { Card, CardHeader, CardBody } from "@components/ui/Card";
-
 import { FilterBuilder } from "./FilterBuilder";
 import { Button } from "@components/ui/Button/Button";
 import { Column } from "../EnhancedTable";
 import { SaveFilterForm } from './SaveFilterForm';
-import { useState } from "react";
 import { SavedFilters } from "./SavedFilters";
+import { enumScope } from "@enums/Filter.enum";
+import { FilterValueResolver } from "@utils/table/FilterValueResoltver";
+import { useEffect, useRef } from "react";
 
 interface FilterManagerProps {
   isOpen: boolean;
@@ -15,12 +16,14 @@ interface FilterManagerProps {
   columns: Column[];
   onApply: (filter: FilterState) => void;
   onClose: () => void;
+  scope: enumScope;
 }
 
-export function FilterManager({ isOpen,filters,columns, onApply, onClose }: FilterManagerProps) {
+export function FilterManager({ isOpen,filters,columns, onApply, onClose, scope }: FilterManagerProps) {
   
   const { 
-   currentFilter,
+    currentFilter,
+    resolvedValues,
     setConditions,
     setLogic,
     setSort,
@@ -29,7 +32,32 @@ export function FilterManager({ isOpen,filters,columns, onApply, onClose }: Filt
     updateSavedFilter
   } = useFilterStore();
 
+  const filterValueResolver = new FilterValueResolver();
+  const hasResolvedRef = useRef(false);
+
+  useEffect(() => {
+    const resolveValues = async () => {
+      if (currentFilter.conditions.length > 0 && !hasResolvedRef.current) {
+        hasResolvedRef.current = true;
+        const resolvedConditions = await filterValueResolver.resolveFilterValues(
+          currentFilter.conditions,
+          resolvedValues
+        );
+        if (JSON.stringify(resolvedConditions) !== JSON.stringify(currentFilter.conditions)) {
+          console.log("🚀 ~ resolveValues ~ resolvedConditions:", resolvedConditions)
+          setConditions(resolvedConditions);
+        }
+      }
+    };
+
+    if (isOpen) {
+      resolveValues();
+    } else {
+      hasResolvedRef.current = false;
+    }
+  }, [isOpen,currentFilter]);
   if (!isOpen) return null;
+
 
   const handleSaveFilter = async (name: string) => {
     // Generate a unique ID for the saved filter
@@ -37,7 +65,8 @@ export function FilterManager({ isOpen,filters,columns, onApply, onClose }: Filt
       id: Date.now().toString(),
       name,
       conditions: currentFilter.conditions,
-      logic: currentFilter.logic
+      logic: currentFilter.logic,
+      scope
     };
 
     // Add to store
@@ -80,7 +109,9 @@ export function FilterManager({ isOpen,filters,columns, onApply, onClose }: Filt
 
         <CardBody className="space-y-6">
           {/* Saved Filters */}
-          <SavedFilters />
+          <SavedFilters
+          scope={scope}
+          />
 
           {/* Filter Builder */}
           <FilterBuilder 

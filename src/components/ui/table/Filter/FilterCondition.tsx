@@ -37,7 +37,7 @@ export const FilterCondition = memo(function FilterCondition({
   const renderValueInput = () => {
     if (!field) return null;
 
-    switch (field.type) {
+    switch (field.type as string) {
       case 'select':
         if (typeof field.options === 'object' && 'endpoint' in field.options) {
           return (

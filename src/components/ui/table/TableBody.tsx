@@ -55,6 +55,7 @@ export const TableBody: React.FC<TableBodyProps> = ({ data, columns, onPaginatio
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {columns.map((column) => {
+            
                 const cellValue = transformer.format(column.id, row[column.id]);
 
                 if (typeof cellValue === 'object') {

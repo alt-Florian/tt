@@ -3,15 +3,22 @@ import { SavedFilter } from "./SavedFilter";
 import { Card, CardBody } from "@components/ui/Card";
 import { FilterConverter } from "@utils/table/FilterConverter";
 import { FilterDefinition } from "@utils/table/interfaces";
-
-
-export function SavedFilters() {
-  const { savedFilters } = useFilterStore();
-  console.log("🚀 ~ SavedFilters ~ savedFilters:", savedFilters)
+import { enumScope } from "@enums/Filter.enum";
+import { SavedFilterType } from "./types";
 
 
 
-  if (savedFilters.length === 0) return null;
+interface SavedFiltersProps {
+  scope: enumScope;
+}
+
+export function SavedFilters({scope}: SavedFiltersProps) {
+  const { getByScope } = useFilterStore();
+  console.log("🚀 ~ SavedFilters ~ savedFilters:", getByScope)
+
+
+
+  if (getByScope.length === 0) return null;
 
   return (
     <Card>
@@ -20,7 +27,7 @@ export function SavedFilters() {
           VOS FILTRES ENREGISTRÉS
         </h4>
         <div className="grid grid-cols-1 gap-2">
-          {savedFilters.map((filter) => (
+          {getByScope(scope).map((filter: SavedFilterType) => (
             <SavedFilter 
               key={filter.id}
               filter={filter}

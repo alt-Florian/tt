@@ -22,10 +22,6 @@ export function useMissionsViewModel() {
     console.log("Applying filters:", filters);
   };
 
-
-
-
-  // console.log("🚀 ~ useMissionsViewModel ~ users:", users)
   const [columns] = useState(MISSION_COLUMNS);
   const [filters] = useState(FILTER_FIELDS);
   return {

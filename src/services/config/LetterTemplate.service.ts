@@ -93,7 +93,7 @@ class LetterTemplateService {
     }, [data, error, isLoading, setLettersTemplate, setError, setLoading]);
 
     return {
-      lettersTemplate: data?.datas || [],
+      lettersTemplate: data?.datas || ['_id','name'],
       isLoading,
       error
     };

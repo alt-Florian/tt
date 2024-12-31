@@ -9,6 +9,12 @@ export const MISSION_COLUMNS = [
     label: 'Client',
     visible: true
   },
+  // {
+  //   id: 'refId',
+  //   label: 'Référence client',
+  //   visible: true
+  // },
+
   {
     id: 'refLawyer',
     label: 'Responsable',

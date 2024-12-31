@@ -42,6 +42,7 @@ export interface MongoQuery extends BaseQuery {
 // Interface principale pour le filtre
 export interface FilterDefinition {
     _id: string;
+    name: string;
     conjonction: number;
     filterSet: FilterSetItem[];
     userId: number;

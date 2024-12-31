@@ -19,7 +19,7 @@ export class TransformTable {
 
     collabList(value: number[]): string {
         if (!value) return '';
-        return this.users.filter((user: UserData) => value.includes(user.id)).map((user: UserData) => user.firstname).join(', ') || 'N/A'
+        return this.users.filter((user: UserData) => value.includes(user.id) && user.isActive === true).map((user: UserData) => user.firstname).join(', ') || 'N/A'
     }
 
     m_progress(value: number) {
@@ -27,7 +27,13 @@ export class TransformTable {
     }
 
     letterTemplate(value: string) {
-        return this.lettersTemplate.find(letter => letter._id === value)?.name || 'N/A';
+        console.log("🚀 ~ TransformTable ~ letterTemplate ~ value:", value)
+        // Handle case where value is null/undefined
+        if (!value) return 'N/A';
+
+        const template = this.lettersTemplate.find(letter => letter._id === value);
+        console.log("🚀 ~ TransformTable ~ letterTemplate ~ his.lettersTemplate:", this.lettersTemplate)
+        return template?.name || 'N/A';
     }
 
     formatDateFr(value: Date): string {
