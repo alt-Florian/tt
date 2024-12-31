@@ -12,35 +12,28 @@ export class FilterValueResolver {
             field: 'customer',
             resolve: async (ids: string[], resolvedValues: Record<string, any[]>) => {
                 try {
-                    // Vérifier d'abord les valeurs déjà résolues
                     const storedValues = resolvedValues['customer'] || [];
 
-
-                    // Filtrer les IDs qui ne sont pas encore résolus
                     const missingIds = ids.filter(id =>
                         !storedValues.find(v => v.id === id)
                     );
 
                     if (missingIds.length === 0) {
-                        // Si toutes les valeurs sont résolues, les retourner
                         return storedValues.filter(v => ids.includes(v.id));
                     }
 
-                    // Sinon, faire l'appel API pour les valeurs manquantes
                     const responses = await Promise.all(
                         missingIds.map(id => customerApi.getPhysicalCustomerProfile(id))
                     );
 
+                    // Modifier la structure des valeurs résolues pour correspondre à l'interface attendue
                     const newResolvedValues = responses.map(response => ({
-                        value: response.datas.details._id,
+                        id: response.datas.details._id, // Utiliser id au lieu de value
                         label: `${response.datas.details.row_infos.firstname} ${response.datas.details.name}`
                     }));
 
-                    // Combiner les nouvelles valeurs avec celles déjà résolues
                     const allValues = [...storedValues, ...newResolvedValues];
-                    console.log("🚀 ~ FilterValueResolver ~ resolve: ~ allValues:", allValues)
 
-                    // Retourner uniquement les valeurs demandées
                     return allValues.filter(v => ids.includes(v.id));
                 } catch (error) {
                     console.error('Error resolving customer values:', error);

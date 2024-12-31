@@ -27,12 +27,9 @@ export class TransformTable {
     }
 
     letterTemplate(value: string) {
-        console.log("🚀 ~ TransformTable ~ letterTemplate ~ value:", value)
         // Handle case where value is null/undefined
         if (!value) return 'N/A';
-
         const template = this.lettersTemplate.find(letter => letter._id === value);
-        console.log("🚀 ~ TransformTable ~ letterTemplate ~ his.lettersTemplate:", this.lettersTemplate)
         return template?.name || 'N/A';
     }
 

@@ -12,12 +12,22 @@ interface DynamicSelectProps {
   value: string;
   onChange: (value: string | Array<string | number>) => void;
   multiSelect?: boolean;
+  condition?: any; // Ajout du prop condition
 }
 
-export function DynamicSelect({ config, value, onChange, multiSelect = false }: DynamicSelectProps) {
+export function DynamicSelect({ 
+  config, 
+  value, 
+  onChange, 
+  multiSelect = false,
+  condition // Récupération du prop condition 
+}: DynamicSelectProps) {
   const { endpoint, transformResponse, searchable, minChars = 3 } = config;
   const [search, setSearch] = useState('');
   const [allOptions, setAllOptions] = useState<SelectOption[]>([]);
+
+  // Récupérer les valeurs résolues si elles existent
+  const resolvedValues = condition?.resolvedValues || [];
 
   const { data, isLoading } = useQuery({
     queryKey: [`filterOptions-${endpoint}${searchable ? `-${search}` : ''}`],
@@ -31,20 +41,23 @@ export function DynamicSelect({ config, value, onChange, multiSelect = false }: 
     refetchOnWindowFocus: false
   });
 
-  // Update allOptions when data changes
+  // Mise à jour des options avec les valeurs résolues
   useEffect(() => {
-    if (data) {
+    if (resolvedValues.length > 0) {
       setAllOptions(prevOptions => {
         const newOptions = [...prevOptions];
-        data.forEach(option => {
-          if (!newOptions.find(existing => existing.value === option.value)) {
-            newOptions.push(option);
+        resolvedValues.forEach((option:any) => {
+          if (!newOptions.find(existing => existing.value === option.id)) {
+            newOptions.push({
+              value: option.id,
+              label: option.label
+            });
           }
         });
         return newOptions;
       });
     }
-  }, [data]);
+  }, [resolvedValues]);
 
   const debouncedSearch = useMemo(
     () => debounce((term: string) => {

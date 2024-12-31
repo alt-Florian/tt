@@ -46,6 +46,7 @@ export const FilterCondition = memo(function FilterCondition({
               value={condition.value as string}
               onChange={(value) => onChange({ ...condition, value })}
               multiSelect={field.multiSelect}
+              condition={condition}
             />
           );
         } else if (Array.isArray(field.options)) {
