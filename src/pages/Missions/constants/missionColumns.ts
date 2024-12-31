@@ -37,7 +37,7 @@ export const MISSION_COLUMNS = [
   },
   {
     id: 'startingDate',
-    label: 'Date de création',
+    label: 'Date de démarrage',
     visible: true
   },
   {
@@ -48,6 +48,16 @@ export const MISSION_COLUMNS = [
   {
     id: 'billing',
     label: 'Facturée',
+    visible: true
+  },
+  {
+    id: 'createdAt',
+    label: 'Crée le ',
+    visible: true
+  },
+  {
+    id: 'updatedAt',
+    label: 'Mise à jour le',
     visible: true
   },
 

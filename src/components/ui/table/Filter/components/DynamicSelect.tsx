@@ -20,7 +20,7 @@ export function DynamicSelect({
   value, 
   onChange, 
   multiSelect = false,
-  condition // Récupération du prop condition 
+  condition
 }: DynamicSelectProps) {
   const { endpoint, transformResponse, searchable, minChars = 3 } = config;
   const [search, setSearch] = useState('');

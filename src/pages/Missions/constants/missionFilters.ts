@@ -139,4 +139,14 @@ export const FILTER_FIELDS: FilterFieldConfig[] = [
         label: 'Block progression',
         type: 'boolean'
     },
+    {
+        id: 'createdAt',
+        label: 'Crée le',
+        type: 'date'
+    },
+    {
+        id: 'updatedAt',
+        label: 'Mise à jour le',
+        type: 'date'
+    },
 ];

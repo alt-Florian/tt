@@ -20,6 +20,8 @@ class TableHelper extends TransformTable {
             case 'dueDate': return this.formatDateFr(value as Date);
             case 'billing': return this.billing(value as boolean);
             case 'customer': return this.customer(value as any[]);
+            case 'createdAt': return this.formatDateFr(value as Date);
+            case 'updatedAt': return this.formatDateFr(value as Date);
             default: return value;
         }
 

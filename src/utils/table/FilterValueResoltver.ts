@@ -26,9 +26,8 @@ export class FilterValueResolver {
                         missingIds.map(id => customerApi.getPhysicalCustomerProfile(id))
                     );
 
-                    // Modifier la structure des valeurs résolues pour correspondre à l'interface attendue
                     const newResolvedValues = responses.map(response => ({
-                        id: response.datas.details._id, // Utiliser id au lieu de value
+                        id: response.datas.details._id, 
                         label: `${response.datas.details.row_infos.firstname} ${response.datas.details.name}`
                     }));
 
@@ -43,26 +42,19 @@ export class FilterValueResolver {
         }
     ];
 
-    public async resolveFilterValues(conditions: FilterCondition[], resolvedValues: Record<string, any[]>): Promise<FilterCondition[]> {
+    async resolveFilterValues(conditions: FilterCondition[], resolvedValues: Record<string, any[]>): Promise<FilterCondition[]> {
         const resolvedConditions = await Promise.all(
             conditions.map(async (condition) => {
                 const resolver = this.resolvers.find(r => r.field === condition.field);
 
                 if (!resolver) return condition;
 
-                if (Array.isArray(condition.value)) {
-                    const rValues = await resolver.resolve(condition.value as string[], resolvedValues);
+                const rValues = await resolver.resolve(condition.value as string[], resolvedValues);
                     return {
                         ...condition,
-                        resolvedValues: rValues
+                        resolvedValues: Array.isArray(condition.value) ? rValues: rValues[0]
                     };
-                } else {
-                    const rValues = await resolver.resolve([condition.value as string], resolvedValues);
-                    return {
-                        ...condition,
-                        resolvedValues: rValues[0]
-                    };
-                }
+               
             })
         );
 

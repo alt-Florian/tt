@@ -14,8 +14,8 @@ class MissionService {
 
     get(skip: number, sort: string = '') {
         return useQuery<MissionsDataInterface, Error>({
-            queryKey: [`getMission-${skip}`, skip],
-            queryFn: () => missionApi.fetch(skip, ['name', 'customer', 'refLawyer', 'm_progress', 'letterTemplate', 'collabList', 'startingDate', 'dueDate', 'billing', 'usersWorkingOn', 'bProgressRange'], sort),
+            queryKey: [`getMission-${skip}-${sort}`, skip, sort],
+            queryFn: () => missionApi.fetch(skip, ['name', 'customer', 'refLawyer', 'm_progress', 'letterTemplate', 'collabList', 'startingDate', 'dueDate', 'billing', 'usersWorkingOn', 'bProgressRange', 'createdAt', 'updatedAt'], sort),
             staleTime: 0,
         });
 
